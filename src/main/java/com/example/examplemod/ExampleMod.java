@@ -1,5 +1,9 @@
 package com.example.examplemod;
 
+import com.example.examplemod.dictionary.DictionaryCommand;
+import com.example.examplemod.dictionary.DictionaryData;
+import net.neoforged.neoforge.event.RegisterCommandsEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -39,7 +43,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 public class ExampleMod
 {
     // Define mod id in a common place for everything to reference
-    public static final String MODID = "examplemod";
+    public static final String MODID = "myrelax";
     // Directly reference a slf4j logger
     private static final Logger LOGGER = LogUtils.getLogger();
     // Create a Deferred Register to hold Blocks which will all be registered under the "examplemod" namespace
@@ -54,6 +58,7 @@ public class ExampleMod
     // Creates a new BlockItem with the id "examplemod:example_block", combining the namespace and path
     public static final DeferredItem<BlockItem> EXAMPLE_BLOCK_ITEM = ITEMS.registerSimpleBlockItem("example_block", EXAMPLE_BLOCK);
 
+    public static final DictionaryData DICTIONARY_DATA = new DictionaryData();
     // Creates a new food item with the id "examplemod:example_id", nutrition 1 and saturation 2
     public static final DeferredItem<Item> EXAMPLE_ITEM = ITEMS.registerSimpleItem("example_item", new Item.Properties().food(new FoodProperties.Builder()
             .alwaysEdible().nutrition(1).saturationModifier(2f).build()));
@@ -91,6 +96,7 @@ public class ExampleMod
 
         // Register our mod's ModConfigSpec so that FML can create and load the config file for us
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
+
     }
 
     private void commonSetup(final FMLCommonSetupEvent event)
@@ -121,6 +127,16 @@ public class ExampleMod
         LOGGER.info("HELLO from server starting");
     }
 
+    @SubscribeEvent
+    public void onRegisterCommandEvent(RegisterCommandsEvent event){
+        DictionaryCommand.register(event.getDispatcher());
+        LOGGER.info("테스트 가입 이벤트");
+    }
+
+    @SubscribeEvent
+    public void onPickupItemEvent(PlayerEvent.ItemPickupEvent event){
+
+    }
     // You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent
     @EventBusSubscriber(modid = MODID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
     public static class ClientModEvents
@@ -132,5 +148,7 @@ public class ExampleMod
             LOGGER.info("HELLO FROM CLIENT SETUP");
             LOGGER.info("MINECRAFT NAME >> {}", Minecraft.getInstance().getUser().getName());
         }
+
     }
+
 }
