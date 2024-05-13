@@ -1,13 +1,9 @@
 package com.example.examplemod;
 
 import com.example.examplemod.dictionary.DictionaryCommand;
-import com.example.examplemod.dictionary.DictionaryData;
-import net.neoforged.neoforge.event.RegisterCommandsEvent;
-import net.neoforged.neoforge.event.entity.player.PlayerEvent;
-import org.slf4j.Logger;
-
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.logging.LogUtils;
-
+import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -30,13 +26,16 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
+import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
+import org.slf4j.Logger;
 
 // The value here should match an entry in the META-INF/neoforge.mods.toml file
 @Mod(ExampleMod.MODID)
@@ -45,7 +44,7 @@ public class ExampleMod
     // Define mod id in a common place for everything to reference
     public static final String MODID = "myrelax";
     // Directly reference a slf4j logger
-    private static final Logger LOGGER = LogUtils.getLogger();
+    public static final Logger LOGGER = LogUtils.getLogger();
     // Create a Deferred Register to hold Blocks which will all be registered under the "examplemod" namespace
     public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(MODID);
     // Create a Deferred Register to hold Items which will all be registered under the "examplemod" namespace
@@ -58,7 +57,6 @@ public class ExampleMod
     // Creates a new BlockItem with the id "examplemod:example_block", combining the namespace and path
     public static final DeferredItem<BlockItem> EXAMPLE_BLOCK_ITEM = ITEMS.registerSimpleBlockItem("example_block", EXAMPLE_BLOCK);
 
-    public static final DictionaryData DICTIONARY_DATA = new DictionaryData();
     // Creates a new food item with the id "examplemod:example_id", nutrition 1 and saturation 2
     public static final DeferredItem<Item> EXAMPLE_ITEM = ITEMS.registerSimpleItem("example_item", new Item.Properties().food(new FoodProperties.Builder()
             .alwaysEdible().nutrition(1).saturationModifier(2f).build()));
@@ -76,6 +74,8 @@ public class ExampleMod
     // FML will recognize some parameter types like IEventBus or ModContainer and pass them in automatically.
     public ExampleMod(IEventBus modEventBus, ModContainer modContainer)
     {
+
+
         // Register the commonSetup method for modloading
         modEventBus.addListener(this::commonSetup);
 
@@ -93,7 +93,7 @@ public class ExampleMod
 
         // Register the item to a creative tab
         modEventBus.addListener(this::addCreative);
-
+        NeoForge.EVENT_BUS.register(new DictionaryEvent2());
         // Register our mod's ModConfigSpec so that FML can create and load the config file for us
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
 
@@ -109,7 +109,7 @@ public class ExampleMod
 
         LOGGER.info(Config.magicNumberIntroduction + Config.magicNumber);
 
-        Config.items.forEach((item) -> LOGGER.info("ITEM >> {}", item.toString()));
+        Config.items.forEach((item) -> LOGGER.info("ITEM >> {}", item));
     }
 
     // Add the example block item to the building blocks tab
@@ -130,24 +130,31 @@ public class ExampleMod
     @SubscribeEvent
     public void onRegisterCommandEvent(RegisterCommandsEvent event){
         DictionaryCommand.register(event.getDispatcher());
-        LOGGER.info("테스트 가입 이벤트");
-    }
-
-    @SubscribeEvent
-    public void onPickupItemEvent(PlayerEvent.ItemPickupEvent event){
 
     }
+
     // You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent
     @EventBusSubscriber(modid = MODID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
     public static class ClientModEvents
     {
+        public static final KeyMapping OPEN_DICTIONARY = new KeyMapping("key.dictionary.open", InputConstants.KEY_O, "key.categories.dictionary.dictionarycategory");
+
+        @SubscribeEvent
+        public static void registerKey(RegisterKeyMappingsEvent event){
+            event.register(OPEN_DICTIONARY);
+        }
+
+
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event)
         {
             // Some client setup code
             LOGGER.info("HELLO FROM CLIENT SETUP");
+
             LOGGER.info("MINECRAFT NAME >> {}", Minecraft.getInstance().getUser().getName());
         }
+
+
 
     }
 

@@ -3,21 +3,18 @@ package com.example.examplemod.dictionary;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.nbt.TextComponentTagVisitor;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.ComponentUtils;
-import net.minecraft.server.commands.SayCommand;
 import net.minecraft.world.entity.player.Player;
 
 public class DictionaryCommand {
 
+    private DictionaryCommand() {
+
+    }
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher){
-        dispatcher.register(Commands.literal("dic").executes((command) ->{
-            return execute(command);
-        }));
+        dispatcher.register(Commands.literal("dic").executes(DictionaryCommand::execute));
     }
 
     public static int execute(CommandContext<CommandSourceStack> context){
