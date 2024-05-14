@@ -17,11 +17,11 @@ public class GuiDictionary extends Screen {
     private FormattedText itemEngName;
     private ItemStack currentItem;
     private Screen lastScreen;
-
+    private Component dictionary;
     private static Map<String, String> languageMap = new HashMap<>();
     public GuiDictionary(Screen lastScreen, ItemStack itemStack) {
         super(Component.literal("도감"));
-        getLanguage();
+        loadLanguageMap();
         this.currentItem = itemStack;
         this.lastScreen = lastScreen;
     }
@@ -47,6 +47,12 @@ public class GuiDictionary extends Screen {
         pGuiGraphics.pose().pushPose();
         pGuiGraphics.pose().scale(0.9F,0.9F,1);
         pGuiGraphics.drawWordWrap(this.font, itemEngName,  this.width / 3 + 58 , posY + 30, 100,0);
+
+        pGuiGraphics.pose().popPose();
+
+        pGuiGraphics.pose().pushPose();
+        pGuiGraphics.pose().scale(0.9F,0.9F,1);
+        pGuiGraphics.drawWordWrap(this.font, dictionary,  this.width / 3 + 58 , posY + 40, 100,0);
 
         pGuiGraphics.pose().popPose();
         renderItem(pGuiGraphics);
@@ -85,7 +91,7 @@ public class GuiDictionary extends Screen {
     /**
      * init 메서드가 실행 될 때 실행해야 합니다!
      */
-    public void getLanguage(){
+    public void loadLanguageMap(){
         try {
             Field tableField = LanguageHook.class.getDeclaredField("defaultLanguageTable");
             tableField.setAccessible(true);

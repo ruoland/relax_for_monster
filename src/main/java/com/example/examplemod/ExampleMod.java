@@ -1,6 +1,7 @@
 package com.example.examplemod;
 
 import com.example.examplemod.dictionary.DictionaryCommand;
+import com.example.examplemod.dictionary.PlayerDictionaryManager;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.KeyMapping;
@@ -8,11 +9,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodProperties;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.CreativeModeTabs;
-import net.minecraft.world.item.Item;
+import net.minecraft.world.item.*;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -30,6 +31,7 @@ import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -41,6 +43,7 @@ import org.slf4j.Logger;
 @Mod(ExampleMod.MODID)
 public class ExampleMod
 {
+
     // Define mod id in a common place for everything to reference
     public static final String MODID = "myrelax";
     // Directly reference a slf4j logger
@@ -91,6 +94,7 @@ public class ExampleMod
         // Do not add this line if there are no @SubscribeEvent-annotated functions in this class, like onServerStarting() below.
         NeoForge.EVENT_BUS.register(this);
 
+
         // Register the item to a creative tab
         modEventBus.addListener(this::addCreative);
         NeoForge.EVENT_BUS.register(new DictionaryEvent2());
@@ -130,6 +134,37 @@ public class ExampleMod
     @SubscribeEvent
     public void onRegisterCommandEvent(RegisterCommandsEvent event){
         DictionaryCommand.register(event.getDispatcher());
+
+    }
+
+    @SubscribeEvent
+    public void onPickupItemEvent(PlayerEvent.ItemPickupEvent event){
+        Player player = event.getEntity();
+        ItemStack pickupStack = event.getStack();
+        Item pickupItem = event.getStack().getItem();
+
+        if(PlayerDictionaryManager.addNewItem((ServerPlayer) player, pickupItem)){
+            player.sendSystemMessage(pickupStack.getDisplayName());
+        }
+        else
+            player.sendSystemMessage(Component.literal("이미 도감에 등록된 아이템입니다."));
+    }
+
+    @SubscribeEvent
+    public void onPlayerSaveEvent(PlayerEvent.SaveToFile event){
+        if(event.getEntity() instanceof ServerPlayer) {
+            ServerPlayer player = (ServerPlayer) event.getEntity();
+            Inventory inventory = player.getInventory();
+
+            for (ItemStack itemStack : inventory.items) {
+                PlayerDictionaryManager.addNewItem(player, itemStack.getItem());
+            }
+            LOGGER.info("Dictionary Saved.");
+        }
+    }
+
+    @SubscribeEvent
+    public void onPlayerLoadEvent(PlayerEvent.LoadFromFile event){
 
     }
 
