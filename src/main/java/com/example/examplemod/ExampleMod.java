@@ -1,6 +1,7 @@
 package com.example.examplemod;
 
 import com.example.examplemod.dictionary.DictionaryCommand;
+import com.example.examplemod.dictionary.ItemDataManager;
 import com.example.examplemod.dictionary.PlayerDictionaryManager;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.logging.LogUtils;
@@ -13,6 +14,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodProperties;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -28,6 +30,7 @@ import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
@@ -114,6 +117,8 @@ public class ExampleMod
         LOGGER.info(Config.magicNumberIntroduction + Config.magicNumber);
 
         Config.items.forEach((item) -> LOGGER.info("ITEM >> {}", item));
+
+
     }
 
     // Add the example block item to the building blocks tab
@@ -127,14 +132,13 @@ public class ExampleMod
     @SubscribeEvent
     public void onServerStarting(ServerStartingEvent event)
     {
-        // Do something when the server starts
         LOGGER.info("HELLO from server starting");
+        ItemDataManager.loadMinecraftItem();
     }
 
     @SubscribeEvent
     public void onRegisterCommandEvent(RegisterCommandsEvent event){
         DictionaryCommand.register(event.getDispatcher());
-
     }
 
     @SubscribeEvent
@@ -159,13 +163,19 @@ public class ExampleMod
             for (ItemStack itemStack : inventory.items) {
                 PlayerDictionaryManager.addNewItem(player, itemStack.getItem());
             }
+
             LOGGER.info("Dictionary Saved.");
         }
+
     }
 
     @SubscribeEvent
+    public void onPlayerLoggedOutEvent(PlayerEvent.PlayerLoggedOutEvent event){
+        ItemDataManager.saveSubData();
+    }
+    @SubscribeEvent
     public void onPlayerLoadEvent(PlayerEvent.LoadFromFile event){
-
+        ItemDataManager.loadSubData();
     }
 
     // You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent
@@ -178,7 +188,6 @@ public class ExampleMod
         public static void registerKey(RegisterKeyMappingsEvent event){
             event.register(OPEN_DICTIONARY);
         }
-
 
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event)

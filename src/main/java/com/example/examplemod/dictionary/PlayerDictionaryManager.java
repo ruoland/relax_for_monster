@@ -7,9 +7,8 @@ import net.minecraft.world.item.Item;
 public class PlayerDictionaryManager {
 
     public static boolean addNewItem(ServerPlayer player, Item item){
-        if(hasItem(player, item)){
+        if(hasItem(player, item))
             return false;
-        }
         else
             getDictionaryTag(player).putBoolean(item.getDescriptionId(), true);
 
@@ -19,7 +18,6 @@ public class PlayerDictionaryManager {
     public static boolean hasItem(ServerPlayer player, Item item){
         return getDictionaryTag(player).getBoolean(item.getDescriptionId());
     }
-
 
     private static CompoundTag getDictionaryTag(ServerPlayer player){
         CompoundTag playerTag = player.getPersistentData();
