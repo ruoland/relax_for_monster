@@ -1,8 +1,9 @@
 package com.example.examplemod;
 
 import com.example.examplemod.dictionary.DictionaryCommand;
-import com.example.examplemod.dictionary.ItemDataManager;
+import com.example.examplemod.dictionary.LangManager;
 import com.example.examplemod.dictionary.PlayerDictionaryManager;
+import com.example.examplemod.dictionary.developer.category.ItemManager;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.KeyMapping;
@@ -14,7 +15,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodProperties;
-import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -30,7 +30,6 @@ import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
-import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
@@ -100,7 +99,7 @@ public class ExampleMod
 
         // Register the item to a creative tab
         modEventBus.addListener(this::addCreative);
-        NeoForge.EVENT_BUS.register(new DictionaryEvent2());
+        NeoForge.EVENT_BUS.register(new DictionaryEvent());
         // Register our mod's ModConfigSpec so that FML can create and load the config file for us
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
 
@@ -133,7 +132,9 @@ public class ExampleMod
     public void onServerStarting(ServerStartingEvent event)
     {
         LOGGER.info("HELLO from server starting");
-        ItemDataManager.loadMinecraftItem();
+        LangManager.loadLanguageMap();
+        ItemManager.loadItemStacks();
+        ItemManager.load();
     }
 
     @SubscribeEvent
@@ -171,11 +172,14 @@ public class ExampleMod
 
     @SubscribeEvent
     public void onPlayerLoggedOutEvent(PlayerEvent.PlayerLoggedOutEvent event){
-        ItemDataManager.saveSubData();
+        ItemManager.save();
+
     }
     @SubscribeEvent
     public void onPlayerLoadEvent(PlayerEvent.LoadFromFile event){
-        ItemDataManager.loadSubData();
+
+        //ItemDataManager.loadMainCategory();
+        //ItemDataManager.loadBlacklist();
     }
 
     // You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent

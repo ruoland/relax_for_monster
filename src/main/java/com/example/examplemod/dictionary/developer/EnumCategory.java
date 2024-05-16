@@ -1,4 +1,4 @@
-package com.example.examplemod.dictionary;
+package com.example.examplemod.dictionary.developer;
 
 public enum EnumCategory {
 
@@ -10,11 +10,13 @@ public enum EnumCategory {
     , "BigDripleaf", "HangingRoots", "Kelp", "TwistingVines", "WeepingVines", "SporeBlossom", "Seagrass", "DeadBush", "Azalea", "TallGrass"
     , "Leaves", "MangroveLeaves", "CherryLeaves", "MangroveRoots", "Sapling", "Mud", "Grass", "Beehive", "CaveVines"
     , "Cherry"),
+    COLOR("contains", "Red", "Blue", "Magenta", "Cherry"),
+    FARM("SugarCane"),
     DECORATION("Slab", "ChiseledBookShelf", "Fence", "Ladder", "Stair", "PressurePlate", "Door", "DecoratedPotBlock"
     , "RotatedPillar", "Wall", "Candle", "Campfire", "Lantern", "Bell"),
-    GLASS("Glass","GlassPane", "StainedGlass", "StainedGlassPane", "TintedGlass", "TintedGlassPane"),
     WOOL("Wool", "WoolCarpet", "Carpet", "Bed"),
     SIGN("StandingSign", "CeilingHangingSign"),
+    NETHER("Nether_"),
     ETC("GameMaster", "EndCrystal", "EnderEye", "Enderpearl", "ChorusFruit", "Elytra", "Instrument", "DiscFragment", "Record", "FireworkRocket", "FireworkStar", "MilkBucket", "Bucket", "MobBucket", "Book", "WritableBook", "EnchantedBook", "Egg", "SpawnEgg", "PlayerHead", "FireCharge", "AnimalArmor", "ExperienceBottle", "SuspiciousStew", "SmithingTemplate", "ScaffoldingBlock", "Bottle");
 
     private String[] strings;

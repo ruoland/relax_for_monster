@@ -1,5 +1,6 @@
 package com.example.examplemod.dictionary;
 
+import com.example.examplemod.ExampleMod;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.server.LanguageHook;
 
@@ -13,12 +14,14 @@ public class LangManager {
     public static String getEnglishName(ItemStack itemStack){
         if(languageMap.isEmpty())
             loadLanguageMap();
+        if(itemStack == null)
+            return "?";
         return (languageMap.get(itemStack.getDescriptionId()));
     }
     /**
      * init 메서드가 실행 될 때 실행해야 합니다!
      */
-    private static void loadLanguageMap(){
+    public static void loadLanguageMap(){
         try {
             Field tableField = LanguageHook.class.getDeclaredField("defaultLanguageTable");
             tableField.setAccessible(true);

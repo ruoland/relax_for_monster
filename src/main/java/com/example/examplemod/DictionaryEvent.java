@@ -6,7 +6,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.RenderTooltipEvent;
 import net.neoforged.neoforge.client.event.ScreenEvent;
 
-public class DictionaryEvent2 {
+public class DictionaryEvent {
 
     final int KEY_CODE = ExampleMod.ClientModEvents.OPEN_DICTIONARY.getKey().getValue();
 
