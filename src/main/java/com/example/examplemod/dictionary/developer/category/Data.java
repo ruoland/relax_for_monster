@@ -25,6 +25,10 @@ public interface Data {
         }
     }
 
+    static void save() throws IOException {
+
+    }
+
     default void createFile(Path createFile) {
         try {
             Files.createDirectories(DIRECTORY_PATH.resolve(createFile));

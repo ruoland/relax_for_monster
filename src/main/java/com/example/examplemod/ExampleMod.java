@@ -4,6 +4,7 @@ import com.example.examplemod.dictionary.DictionaryCommand;
 import com.example.examplemod.dictionary.LangManager;
 import com.example.examplemod.dictionary.PlayerDictionaryManager;
 import com.example.examplemod.dictionary.developer.category.ItemManager;
+import com.example.examplemod.dictionary.developer.category.TagManager;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.KeyMapping;
@@ -40,6 +41,8 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.slf4j.Logger;
+
+import java.io.IOException;
 
 // The value here should match an entry in the META-INF/neoforge.mods.toml file
 @Mod(ExampleMod.MODID)
@@ -133,8 +136,12 @@ public class ExampleMod
     {
         LOGGER.info("HELLO from server starting");
         LangManager.loadLanguageMap();
-        ItemManager.loadItemStacks();
-        ItemManager.load();
+        try {
+            ItemManager.loadMinecraftItems();
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+        TagManager.getTagManager().loadTag();
     }
 
     @SubscribeEvent
@@ -172,7 +179,11 @@ public class ExampleMod
 
     @SubscribeEvent
     public void onPlayerLoggedOutEvent(PlayerEvent.PlayerLoggedOutEvent event){
-        ItemManager.save();
+        try {
+            TagManager.getTagManager().saveTag();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
     }
     @SubscribeEvent
