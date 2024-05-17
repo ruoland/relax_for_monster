@@ -2,25 +2,18 @@ package com.example.examplemod.gui;
 
 import com.example.examplemod.ExampleMod;
 import com.example.examplemod.dictionary.LangManager;
-import com.example.examplemod.dictionary.developer.category.ItemContent;
-import com.example.examplemod.dictionary.developer.category.ItemManager;
-import com.example.examplemod.dictionary.developer.category.TagManager;
+
+import com.example.examplemod.dictionary.developer.category.*;
+import com.example.examplemod.dictionary.itemcontent.ItemContent;
+import com.example.examplemod.dictionary.itemcontent.ItemGroupContent;
+import com.example.examplemod.dictionary.itemcontent.SubData;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.MultiLineTextWidget;
-import net.minecraft.client.gui.screens.OptionsScreen;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.inventory.BookEditScreen;
 import net.minecraft.client.gui.screens.inventory.BookViewScreen;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.Style;
-import net.minecraft.server.commands.GiveCommand;
-import net.minecraft.util.FormattedCharSequence;
-import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,13 +31,15 @@ public class ContentScreen extends DebugScreen {
         super(Component.literal("도감"));
         itemName = FormattedText.of(itemStack.getDisplayName().getString());
         itemEngName = FormattedText.of(LangManager.getEnglishName(itemStack));
+        SubData subData = TagManager.getTagManager().getItemTag(itemStack).getSubData();
 
-        for(ItemContent content : TagManager.getTagManager().getItemTag(itemStack).getSubData().getItemContentList().values()){
-            itemList.add(ItemManager.getItemStackMap().get(content.getItemID()));
+        for(ItemGroupContent groupContent : subData.getGroupMap().values()){
+            for(ItemContent content :groupContent.getContentMap().values())
+                itemList.add(ItemManager.getItemStackMap().get(content.getItemID()));
         }
         this.lastScreen = lastScreen;
 
-        String content = ItemManager.getContent(itemStack).replace("\\n", NEW_LINE);
+        String content = (ItemManager.getContent(itemStack).replace("\\n", NEW_LINE));
 
         try {
             String[] contentSplit =content.split(NEW_LINE);
@@ -62,9 +57,11 @@ public class ContentScreen extends DebugScreen {
             dictionarySplit[0] = Component.literal("이 도감 내용에는 줄바꿈이 너무 많아 제대로 표현할 수 없습니다. '\\n' 의 개수를 줄여주세요.");
         }
     }
-    int itemInfoName = 80;
-    int itemInfoX = itemInfoName + 20;
+    int itemInfoName = 90;
+    int itemInfoX = itemInfoName + 30;
+    int itemRender = 75;
     int width = 300;
+
     @Override
     public void render(GuiGraphics pGuiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
         super.render(pGuiGraphics, pMouseX, pMouseY, pPartialTick);
@@ -105,7 +102,9 @@ public class ContentScreen extends DebugScreen {
         {
             itemIndex = 0;
         }
-        renderItem(pGuiGraphics, guiLeft + itemInfoName - 70, guiTop-2, 3.5F, itemList.get(itemIndex), pPartialTick);
+
+
+        renderItem(pGuiGraphics, guiLeft + itemInfoName - itemRender, guiTop-2, 3.5F, itemList.get(itemIndex), pPartialTick);
     }
     int tick  = 0;
     @Override

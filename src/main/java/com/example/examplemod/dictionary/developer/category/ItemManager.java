@@ -1,15 +1,13 @@
 package com.example.examplemod.dictionary.developer.category;
 
-import com.example.examplemod.ExampleMod;
+import com.example.examplemod.dictionary.itemcontent.ItemContent;
+import com.example.examplemod.dictionary.itemcontent.ItemGroupContent;
+import com.example.examplemod.dictionary.itemcontent.SubData;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
-import java.io.IOException;
 import java.lang.reflect.Field;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
 
 public class ItemManager {
@@ -44,9 +42,17 @@ public class ItemManager {
 
     public static String getContent(ItemStack itemStack) {
         SubData sub = TagManager.getTagManager().getItemTag(itemStack).getSubData();
-        ItemContent content = sub.getItemContent(itemStack);
+        ItemGroupContent itemGroup = sub.getItemGroup(itemStack);
+        ItemContent content = itemGroup.getItemContent(itemStack);
+        StringBuffer stringBuffer = new StringBuffer();
+        if(sub.isReplace())
+            stringBuffer.append(sub.getSubDictionary());
+        else {
+            stringBuffer.append(sub.getSubDictionary()).append("\n");
+            stringBuffer.append(itemGroup.getDictionary()).append("\n");
+        }
         if(content.getDictionary().equals("설명"))
-            return sub.getSubDictionary();
+            return stringBuffer.append(sub.getSubDictionary()).toString();
         return content.getDictionary();
     }
 

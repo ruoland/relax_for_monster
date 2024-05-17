@@ -1,6 +1,8 @@
 package com.example.examplemod.dictionary.developer.category;
 
-import com.example.examplemod.ExampleMod;
+import com.example.examplemod.dictionary.itemcontent.EnumTag;
+import com.example.examplemod.dictionary.itemcontent.ItemTag;
+import com.example.examplemod.dictionary.itemcontent.SubData;
 import net.minecraft.world.item.ItemStack;
 
 import java.io.IOException;
@@ -37,20 +39,23 @@ public class TagManager {
             for(EnumTag tag : EnumTag.values()){
                 tagEnumMap.put(tag, new ItemTag(tag));
             }
-            tagging();
+
         }
+        tagging();
     }
 
     public void tagging(){
         for (ItemStack itemStack : ItemManager.getItemList()) {
             ItemTag itemTag = getItemTag(getTag(itemStack));
             SubData sub = itemTag.getSubData();
-            ExampleMod.LOGGER.info(itemTag.getTagName()+"");
-            if (!sub.hasItem(itemStack)) {
+            if(sub.hasGroup(itemStack))
+                sub.getItemGroup(itemStack).add(itemStack);
+            else
                 sub.addItemContent(itemStack);
-            }
+
         }
     }
+
 
     public ItemTag getItemTag(EnumTag enumTag){
         return tagEnumMap.get(enumTag);
@@ -73,15 +78,20 @@ public class TagManager {
         String[] split = itemID.split("_");
         if(split.length > 0) {
             for(EnumTag enumCombine : EnumTag.values()) {
-                if(itemID.contains("crimson") || itemID.contains("quartz"))
+                if(itemID.contains("spawn_egg"))
+                    return EnumTag.SPAWN;
+                else if(itemID.contains("armor_stand"))
+                    return EnumTag.ETC;
+                else if(itemID.contains("horse_armor"))
+                    return EnumTag.ETC;
+                else if(itemID.contains("crimson") || itemID.contains("quartz") || itemID.contains("nether_"))
                     return EnumTag.NETHER;
-                else if(itemID.contains("mangrove"))
-                    return EnumTag.WOOD;
                 else if(itemID.contains("coral") || itemID.contains("kelp"))
                     return EnumTag.CORAL;
-                if (enumCombine.containsKey(getItemID(itemStack))) {
+                if (enumCombine.containsKey(getItemCutID(itemStack))) {
                     return enumCombine;
                 }
+
             }
         }
 
@@ -91,7 +101,7 @@ public class TagManager {
     /**
      * 앞 글자나 뒷 글자로 아이디 가져오기.
      * */
-    public String getItemID(ItemStack itemStack) {
+    public String getItemCutID(ItemStack itemStack) {
         String itemID = itemStack.getDescriptionId();
         itemID = itemID.substring(itemID.indexOf("minecraft.") + 10);
         String[] split = itemID.split("_");
@@ -103,7 +113,9 @@ public class TagManager {
                     return postfix;
                 else if(enumTag.containsKey(prefix))
                     return prefix;
-                return getTag(itemStack).name();
+                else
+                    return postfix;
+
             }
         }
         return itemID;

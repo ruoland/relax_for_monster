@@ -1,4 +1,4 @@
-package com.example.examplemod.dictionary.developer.category;
+package com.example.examplemod.dictionary.itemcontent;
 
 import java.util.EnumMap;
 
@@ -30,7 +30,7 @@ public enum EnumTag {
     CHORUS("chorus"),
     COPPER("copper", "oxidized", "weathered", "exposed"),
     ORE("ore", "raw", "ingot", "nugget"),
-    SPAWN("egg"),
+    SPAWN(""),
     DYE("dye"),
     BUCKET("bucket"),
     FISH("salmon", "fish", "pufferfish"),
@@ -46,6 +46,8 @@ public enum EnumTag {
     POLISHED("polished"),
     POTION("potion"),
     TEMPLATE("template"),
+    ORE_BLOCK("redstone_block", "lapis_block", "gold_block", "diamond_block", "copper_block"),
+    ORE_ITEMS("raw", "coal_block"),
     ETC;
 
     private String[] strings;
@@ -78,7 +80,8 @@ public enum EnumTag {
                 "바지의 경우 신속한 잠행이란 마법 부여를 가질 수 있습니다.(웅크린 상태에서 빠르게 이동하는 마법.)\\n" +
                 " 신발의 경우 가벼운 착지나 물갈퀴, 차가운 걸음, 등 다양한 마법 부여를 가질 수 있습니다");
 
-        return
+        tagDictionary.put(TOOLS, "게임에 필수적인 도구들입니다.");
+        return "";
 
 
     }

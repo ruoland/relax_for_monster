@@ -1,6 +1,7 @@
-package com.example.examplemod.dictionary.developer.category;
+package com.example.examplemod.dictionary.itemcontent;
 
 import com.example.examplemod.dictionary.LangManager;
+import com.example.examplemod.dictionary.developer.category.IContent;
 import com.google.gson.annotations.SerializedName;
 import net.minecraft.world.item.ItemStack;
 
@@ -10,13 +11,13 @@ public class ItemContent implements IContent {
     String itemID = "";
     @SerializedName("아이템 영어 이름")
     String englishName = LangManager.getEnglishName(itemStack);
+
     @SerializedName("아이템에 대한 설명")
     String dictionary = "설명";
 
     ItemContent(ItemStack itemStack) {
         this.itemStack = itemStack;
         itemID = itemStack.getDescriptionId();
-
     }
 
     public String getItemID() {
@@ -31,4 +32,5 @@ public class ItemContent implements IContent {
     public boolean isGroup() {
         return false;
     }
+
 }
