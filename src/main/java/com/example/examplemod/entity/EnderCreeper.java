@@ -26,7 +26,7 @@ public class EnderCreeper extends Creeper {
         super(pEntityType, pLevel);
     }
 
-    public static AttributeSupplier.Builder createExampleAttributes() {
+    public static AttributeSupplier.Builder createAttributes() {
 
         return Creeper.createLivingAttributes().add(Attributes.KNOCKBACK_RESISTANCE, 0D).add(Attributes.MOVEMENT_SPEED, 0.25).add(Attributes.FOLLOW_RANGE, 16);
     }

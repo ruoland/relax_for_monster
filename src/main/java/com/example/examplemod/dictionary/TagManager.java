@@ -1,6 +1,7 @@
-package com.example.examplemod.dictionary.developer.category;
+package com.example.examplemod.dictionary;
 
 import com.example.examplemod.ExampleMod;
+import com.example.examplemod.dictionary.developer.category.Data;
 import com.example.examplemod.dictionary.itemcontent.EnumTag;
 import com.example.examplemod.dictionary.itemcontent.ItemTag;
 import com.example.examplemod.dictionary.itemcontent.SubData;
@@ -53,7 +54,6 @@ public class TagManager {
             ItemTag itemTag = getItemTag(getTag(itemStack));
             SubData sub = itemTag.getSubData();
             if(sub == null) {
-                ExampleMod.LOGGER.info(itemTag.getSubData() + " - "+ itemTag.getTagName()+"  - "+itemStack);
                 continue;
             }
             if(sub.hasGroup(itemStack))

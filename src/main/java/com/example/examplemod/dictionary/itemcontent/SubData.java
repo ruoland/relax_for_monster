@@ -1,6 +1,6 @@
 package com.example.examplemod.dictionary.itemcontent;
 
-import com.example.examplemod.dictionary.developer.category.TagManager;
+import com.example.examplemod.dictionary.TagManager;
 import com.google.gson.annotations.SerializedName;
 import net.minecraft.world.item.ItemStack;
 

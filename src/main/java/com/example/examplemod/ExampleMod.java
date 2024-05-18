@@ -4,13 +4,17 @@ import com.example.examplemod.dictionary.DictionaryCommand;
 import com.example.examplemod.dictionary.DictionaryEvent;
 import com.example.examplemod.dictionary.LangManager;
 import com.example.examplemod.dictionary.PlayerDictionaryManager;
-import com.example.examplemod.dictionary.developer.category.FileManager;
-import com.example.examplemod.dictionary.developer.category.ItemManager;
-import com.example.examplemod.dictionary.developer.category.TagManager;
+import com.example.examplemod.dictionary.FileManager;
+import com.example.examplemod.dictionary.ItemManager;
+import com.example.examplemod.dictionary.TagManager;
 import com.example.examplemod.entity.EnderCreeper;
+import com.example.examplemod.entity.MiniCreeper;
 import com.example.examplemod.entity.RelaxEntityEvent;
+import com.example.examplemod.entity.ZombieCreeper;
 import com.example.examplemod.entity.render.EnderCreeperRender;
+import com.example.examplemod.entity.render.MiniCreeperRender;
 import com.example.examplemod.entity.render.SpiderCreeperRender;
+import com.example.examplemod.entity.render.ZombieCreeperRender;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.KeyMapping;
@@ -113,8 +117,11 @@ public class ExampleMod
 
     public void newEntityAttributes(EntityAttributeCreationEvent event) {
         ExampleMod.LOGGER.info("안녕");
-        event.put(MyEntity.CREEPER.get(), EnderCreeper.createExampleAttributes().add(Attributes.MAX_HEALTH).add(Attributes.KNOCKBACK_RESISTANCE, 0F).build());
+        event.put(MyEntity.CREEPER.get(), EnderCreeper.createAttributes().add(Attributes.MAX_HEALTH).add(Attributes.KNOCKBACK_RESISTANCE, 0F).build());
         event.put(MyEntity.SPIDER.get(), Spider.createAttributes().add(Attributes.MAX_HEALTH).add(Attributes.KNOCKBACK_RESISTANCE, 0F).build());
+        event.put(MyEntity.MINI_CREEPER.get(), MiniCreeper.createAttributes().add(Attributes.MAX_HEALTH).build());
+        event.put(MyEntity.ZOMBIE_CREEPER.get(), ZombieCreeper.createAttributes().add(Attributes.MAX_HEALTH)
+                .add(Attributes.KNOCKBACK_RESISTANCE, 0F).build());
 
     }
     private void commonSetup(final FMLCommonSetupEvent event)
@@ -220,7 +227,8 @@ public class ExampleMod
             LOGGER.info("HELLO FROM CLIENT SETUP");
             EntityRenderers.register(MyEntity.CREEPER.get(), EnderCreeperRender::new);
             EntityRenderers.register(MyEntity.SPIDER.get(), SpiderCreeperRender::new);
-
+            EntityRenderers.register(MyEntity.MINI_CREEPER.get(), MiniCreeperRender::new);
+            EntityRenderers.register(MyEntity.ZOMBIE_CREEPER.get(), ZombieCreeperRender::new);
             LOGGER.info("MINECRAFT NAME >> {}", Minecraft.getInstance().getUser().getName());
         }
 

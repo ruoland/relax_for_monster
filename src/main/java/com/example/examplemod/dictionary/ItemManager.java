@@ -1,4 +1,4 @@
-package com.example.examplemod.dictionary.developer.category;
+package com.example.examplemod.dictionary;
 
 import com.example.examplemod.dictionary.itemcontent.ItemContent;
 import com.example.examplemod.dictionary.itemcontent.ItemGroupContent;

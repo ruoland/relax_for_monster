@@ -1,9 +1,10 @@
 package com.example.examplemod.gui;
 
 import com.example.examplemod.ExampleMod;
+import com.example.examplemod.dictionary.ItemManager;
 import com.example.examplemod.dictionary.LangManager;
 
-import com.example.examplemod.dictionary.developer.category.*;
+import com.example.examplemod.dictionary.TagManager;
 import com.example.examplemod.dictionary.itemcontent.ItemContent;
 import com.example.examplemod.dictionary.itemcontent.ItemGroupContent;
 import com.example.examplemod.dictionary.itemcontent.SubData;
