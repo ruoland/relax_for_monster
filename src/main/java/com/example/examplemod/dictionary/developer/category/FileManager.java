@@ -12,7 +12,9 @@ public class FileManager implements Data{
     @Override
     public void init() {
         Data.super.init();
+        DIRECTORY_PATH.toFile().mkdir();
         createFile(BLACK_LIST_FILE);
+
     }
 
 

@@ -9,10 +9,12 @@ import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodProperties;
@@ -34,12 +36,10 @@ import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
+import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
-import net.neoforged.neoforge.registries.DeferredBlock;
-import net.neoforged.neoforge.registries.DeferredHolder;
-import net.neoforged.neoforge.registries.DeferredItem;
-import net.neoforged.neoforge.registries.DeferredRegister;
+import net.neoforged.neoforge.registries.*;
 import org.slf4j.Logger;
 
 import java.io.IOException;
@@ -99,6 +99,8 @@ public class ExampleMod
         // Do not add this line if there are no @SubscribeEvent-annotated functions in this class, like onServerStarting() below.
         NeoForge.EVENT_BUS.register(this);
 
+        Entities.register(modEventBus);
+        modEventBus.addListener(this::newEntityAttributes);
 
         // Register the item to a creative tab
         modEventBus.addListener(this::addCreative);
@@ -108,6 +110,10 @@ public class ExampleMod
 
     }
 
+    public void newEntityAttributes(EntityAttributeCreationEvent event) {
+        ExampleMod.LOGGER.info("안녕");
+        event.put(Entities.CREEPER.get(), EnderCreeper.createExampleAttributes().add(Attributes.MAX_HEALTH).add(Attributes.KNOCKBACK_RESISTANCE, 10F).build());
+    }
     private void commonSetup(final FMLCommonSetupEvent event)
     {
         // Some common setup code
@@ -209,6 +215,7 @@ public class ExampleMod
         {
             // Some client setup code
             LOGGER.info("HELLO FROM CLIENT SETUP");
+            EntityRenderers.register(Entities.CREEPER.get(), EnderCreeperRender::new);
 
             LOGGER.info("MINECRAFT NAME >> {}", Minecraft.getInstance().getUser().getName());
         }

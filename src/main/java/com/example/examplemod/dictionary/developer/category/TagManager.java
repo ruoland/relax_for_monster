@@ -1,5 +1,6 @@
 package com.example.examplemod.dictionary.developer.category;
 
+import com.example.examplemod.ExampleMod;
 import com.example.examplemod.dictionary.itemcontent.EnumTag;
 import com.example.examplemod.dictionary.itemcontent.ItemTag;
 import com.example.examplemod.dictionary.itemcontent.SubData;
@@ -23,8 +24,10 @@ public class TagManager {
     }
 
     public void saveTag() throws IOException {
+        FileManager.blackListLoad();
         for (EnumTag tag : EnumTag.values()) {
             Path tagFile = Data.DIRECTORY_PATH.resolve(Paths.get(tag + ".json"));
+            ExampleMod.LOGGER.info(tagFile.toString());
             tagFile.toFile().createNewFile();
             Data.saveJson(tagFile, getTagManager().getItemTag(tag));
         }
