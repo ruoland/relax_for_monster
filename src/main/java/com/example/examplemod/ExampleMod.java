@@ -1,10 +1,16 @@
 package com.example.examplemod;
 
 import com.example.examplemod.dictionary.DictionaryCommand;
+import com.example.examplemod.dictionary.DictionaryEvent;
 import com.example.examplemod.dictionary.LangManager;
 import com.example.examplemod.dictionary.PlayerDictionaryManager;
+import com.example.examplemod.dictionary.developer.category.FileManager;
 import com.example.examplemod.dictionary.developer.category.ItemManager;
 import com.example.examplemod.dictionary.developer.category.TagManager;
+import com.example.examplemod.entity.EnderCreeper;
+import com.example.examplemod.entity.RelaxEntityEvent;
+import com.example.examplemod.entity.render.EnderCreeperRender;
+import com.example.examplemod.entity.render.SpiderCreeperRender;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.KeyMapping;
@@ -15,6 +21,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.monster.Spider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodProperties;
@@ -39,7 +46,9 @@ import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
-import net.neoforged.neoforge.registries.*;
+import net.neoforged.neoforge.registries.DeferredBlock;
+import net.neoforged.neoforge.registries.DeferredItem;
+import net.neoforged.neoforge.registries.DeferredRegister;
 import org.slf4j.Logger;
 
 import java.io.IOException;
@@ -55,28 +64,19 @@ public class ExampleMod
     public static final Logger LOGGER = LogUtils.getLogger();
     // Create a Deferred Register to hold Blocks which will all be registered under the "examplemod" namespace
     public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(MODID);
-    // Create a Deferred Register to hold Items which will all be registered under the "examplemod" namespace
-    public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(MODID);
-    // Create a Deferred Register to hold CreativeModeTabs which will all be registered under the "examplemod" namespace
-    public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
-
     // Creates a new Block with the id "examplemod:example_block", combining the namespace and path
     public static final DeferredBlock<Block> EXAMPLE_BLOCK = BLOCKS.registerSimpleBlock("example_block", BlockBehaviour.Properties.of().mapColor(MapColor.STONE));
+    // Create a Deferred Register to hold Items which will all be registered under the "examplemod" namespace
+    public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(MODID);
     // Creates a new BlockItem with the id "examplemod:example_block", combining the namespace and path
     public static final DeferredItem<BlockItem> EXAMPLE_BLOCK_ITEM = ITEMS.registerSimpleBlockItem("example_block", EXAMPLE_BLOCK);
-
     // Creates a new food item with the id "examplemod:example_id", nutrition 1 and saturation 2
     public static final DeferredItem<Item> EXAMPLE_ITEM = ITEMS.registerSimpleItem("example_item", new Item.Properties().food(new FoodProperties.Builder()
             .alwaysEdible().nutrition(1).saturationModifier(2f).build()));
-
+    // Create a Deferred Register to hold CreativeModeTabs which will all be registered under the "examplemod" namespace
+    public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
     // Creates a creative tab with the id "examplemod:example_tab" for the example item, that is placed after the combat tab
-    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> EXAMPLE_TAB = CREATIVE_MODE_TABS.register("example_tab", () -> CreativeModeTab.builder()
-            .title(Component.translatable("itemGroup.examplemod")) //The language key for the title of your CreativeModeTab
-            .withTabsBefore(CreativeModeTabs.COMBAT)
-            .icon(() -> EXAMPLE_ITEM.get().getDefaultInstance())
-            .displayItems((parameters, output) -> {
-                output.accept(EXAMPLE_ITEM.get()); // Add the example item to the tab. For your own tabs, this method is preferred over the event
-            }).build());
+
 
     // The constructor for the mod class is the first code that is run when your mod is loaded.
     // FML will recognize some parameter types like IEventBus or ModContainer and pass them in automatically.
@@ -98,8 +98,9 @@ public class ExampleMod
         // Note that this is necessary if and only if we want *this* class (ExampleMod) to respond directly to events.
         // Do not add this line if there are no @SubscribeEvent-annotated functions in this class, like onServerStarting() below.
         NeoForge.EVENT_BUS.register(this);
+        NeoForge.EVENT_BUS.register(new RelaxEntityEvent());
 
-        Entities.register(modEventBus);
+        MyEntity.register(modEventBus);
         modEventBus.addListener(this::newEntityAttributes);
 
         // Register the item to a creative tab
@@ -112,7 +113,9 @@ public class ExampleMod
 
     public void newEntityAttributes(EntityAttributeCreationEvent event) {
         ExampleMod.LOGGER.info("안녕");
-        event.put(Entities.CREEPER.get(), EnderCreeper.createExampleAttributes().add(Attributes.MAX_HEALTH).add(Attributes.KNOCKBACK_RESISTANCE, 10F).build());
+        event.put(MyEntity.CREEPER.get(), EnderCreeper.createExampleAttributes().add(Attributes.MAX_HEALTH).add(Attributes.KNOCKBACK_RESISTANCE, 0F).build());
+        event.put(MyEntity.SPIDER.get(), Spider.createAttributes().add(Attributes.MAX_HEALTH).add(Attributes.KNOCKBACK_RESISTANCE, 0F).build());
+
     }
     private void commonSetup(final FMLCommonSetupEvent event)
     {
@@ -142,6 +145,7 @@ public class ExampleMod
     {
         LOGGER.info("HELLO from server starting");
         LangManager.loadLanguageMap();
+        FileManager.getInstance().init();
         try {
             ItemManager.loadMinecraftItems();
         } catch (IllegalAccessException e) {
@@ -170,8 +174,7 @@ public class ExampleMod
 
     @SubscribeEvent
     public void onPlayerSaveEvent(PlayerEvent.SaveToFile event){
-        if(event.getEntity() instanceof ServerPlayer) {
-            ServerPlayer player = (ServerPlayer) event.getEntity();
+        if(event.getEntity() instanceof ServerPlayer player) {
             Inventory inventory = player.getInventory();
 
             for (ItemStack itemStack : inventory.items) {
@@ -215,7 +218,8 @@ public class ExampleMod
         {
             // Some client setup code
             LOGGER.info("HELLO FROM CLIENT SETUP");
-            EntityRenderers.register(Entities.CREEPER.get(), EnderCreeperRender::new);
+            EntityRenderers.register(MyEntity.CREEPER.get(), EnderCreeperRender::new);
+            EntityRenderers.register(MyEntity.SPIDER.get(), SpiderCreeperRender::new);
 
             LOGGER.info("MINECRAFT NAME >> {}", Minecraft.getInstance().getUser().getName());
         }

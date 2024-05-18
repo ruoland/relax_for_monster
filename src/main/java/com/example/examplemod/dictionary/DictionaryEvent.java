@@ -1,5 +1,6 @@
-package com.example.examplemod;
+package com.example.examplemod.dictionary;
 
+import com.example.examplemod.ExampleMod;
 import com.example.examplemod.gui.ContentScreen;
 import net.minecraft.client.Minecraft;
 import net.neoforged.bus.api.SubscribeEvent;

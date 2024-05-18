@@ -1,8 +1,8 @@
-package com.example.examplemod;
+package com.example.examplemod.entity.render;
 
+import com.example.examplemod.entity.EnderCreeper;
 import net.minecraft.client.model.CreeperModel;
 import net.minecraft.client.model.geom.ModelLayers;
-import net.minecraft.client.renderer.entity.CreeperRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.ResourceLocation;

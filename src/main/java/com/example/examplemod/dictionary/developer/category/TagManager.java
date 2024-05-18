@@ -17,6 +17,7 @@ public class TagManager {
     private static final TagManager TAG_MANAGER;
     static {
         TAG_MANAGER = new TagManager();
+
     }
 
     public static TagManager getTagManager() {
@@ -24,7 +25,7 @@ public class TagManager {
     }
 
     public void saveTag() throws IOException {
-        FileManager.blackListLoad();
+
         for (EnumTag tag : EnumTag.values()) {
             Path tagFile = Data.DIRECTORY_PATH.resolve(Paths.get(tag + ".json"));
             ExampleMod.LOGGER.info(tagFile.toString());
@@ -51,6 +52,10 @@ public class TagManager {
         for (ItemStack itemStack : ItemManager.getItemList()) {
             ItemTag itemTag = getItemTag(getTag(itemStack));
             SubData sub = itemTag.getSubData();
+            if(sub == null) {
+                ExampleMod.LOGGER.info(itemTag.getSubData() + " - "+ itemTag.getTagName()+"  - "+itemStack);
+                continue;
+            }
             if(sub.hasGroup(itemStack))
                 sub.getItemGroup(itemStack).add(itemStack);
             else

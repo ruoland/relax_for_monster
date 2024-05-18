@@ -29,11 +29,21 @@ public interface Data {
 
     }
 
-    default void createFile(Path createFile) {
+    default void createFolder(Path createFile) {
         try {
             Files.createDirectories(DIRECTORY_PATH.resolve(createFile));
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    default void createFile(Path createFile) {
+        try {
+            Path file =DIRECTORY_PATH.resolve(createFile);
+            if(!file.toFile().isFile())
+                Files.createFile(DIRECTORY_PATH.resolve(file));
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
