@@ -15,20 +15,25 @@ import com.example.examplemod.entity.render.EnderCreeperRender;
 import com.example.examplemod.entity.render.MiniCreeperRender;
 import com.example.examplemod.entity.render.SpiderCreeperRender;
 import com.example.examplemod.entity.render.ZombieCreeperRender;
+import com.example.examplemod.gui.DictionaryContainer;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.Spider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodProperties;
+import net.minecraft.world.inventory.ChestMenu;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -44,6 +49,7 @@ import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
@@ -80,7 +86,6 @@ public class ExampleMod
     // Create a Deferred Register to hold CreativeModeTabs which will all be registered under the "examplemod" namespace
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
     // Creates a creative tab with the id "examplemod:example_tab" for the example item, that is placed after the combat tab
-
 
     // The constructor for the mod class is the first code that is run when your mod is loaded.
     // FML will recognize some parameter types like IEventBus or ModContainer and pass them in automatically.
@@ -177,8 +182,16 @@ public class ExampleMod
         }
         else
             player.sendSystemMessage(Component.literal("이미 도감에 등록된 아이템입니다."));
-    }
 
+        ChestMenu chestMenu =MenuScreens.create(MenuType.GENERIC_9x6, Minecraft.getInstance(), 1, Component.literal("kssus"));
+
+
+    }
+    @SubscribeEvent
+    public void onPlayerSaveEvent(RegisterMenuScreensEvent event) {
+
+        event.register(MenuType.GENERIC_9x6, MenuScreens.getScreenFactory(MenuType.GENERIC_9x6));
+    }
     @SubscribeEvent
     public void onPlayerSaveEvent(PlayerEvent.SaveToFile event){
         if(event.getEntity() instanceof ServerPlayer player) {

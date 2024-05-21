@@ -29,8 +29,11 @@ public class DIctionaryScreen extends DebugScreen {
         int x= 0, line=0, id = 0;
         for(int i = 0; i < itemStackList.size();i++){
             x+= 20;
-            renderItem(pGuiGraphics, x, line * 20, 1, itemStackList.get(i), pPartialTick);
 
+            renderItem(pGuiGraphics, x, line * 20, 1, itemStackList.get(i), pPartialTick);
+            if(i % 10 == 0){
+                line++;
+            }
         }
     }
 
