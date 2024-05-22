@@ -2,19 +2,28 @@ package com.example.examplemod.entity;
 
 import com.example.examplemod.ExampleMod;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.Creeper;
+import net.minecraft.world.entity.monster.Skeleton;
+import net.minecraft.world.entity.monster.Spider;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.ServerLevelAccessor;
 import org.jetbrains.annotations.Nullable;
 
 public class MiniCreeper extends Creeper {
     private boolean isAdult = true;
     private int waitingTime = 60;
     private float explosionRadius = 3;
+    private static final EntityDataAccessor<Boolean> DATA_TEST = SynchedEntityData.defineId(MiniCreeper.class, EntityDataSerializers.BOOLEAN);
+
     public MiniCreeper(EntityType<? extends Creeper> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
     }
@@ -26,12 +35,19 @@ public class MiniCreeper extends Creeper {
     }
 
     @Override
+    protected void defineSynchedData(SynchedEntityData.Builder pBuilder) {
+        super.defineSynchedData(pBuilder);
+        pBuilder.define(DATA_TEST, false);
+
+    }
+
+    @Override
     protected void registerGoals() {
         super.registerGoals();
     }
 
     public boolean isAdult() {
-        return isAdult;
+        return entityData.get(DATA_TEST);
     }
 
     @Override
@@ -40,6 +56,8 @@ public class MiniCreeper extends Creeper {
         if(!isAdult) {
             if (waitingTime > 0) {
                 waitingTime--;
+
+                entityData.set(DATA_TEST, true);
                 getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0);
             } else if (waitingTime == 0) {
                 getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.25F);
@@ -49,10 +67,16 @@ public class MiniCreeper extends Creeper {
     }
 
 
+
     @Override
     public void die(DamageSource pDamageSource) {
-
-
+        getEntityData().set(DATA_TEST, true);
+        Skeleton skeleton = EntityType.SKELETON.create(this.level());
+        if (skeleton != null && level() instanceof ServerLevelAccessor) {
+            skeleton.moveTo(this.getX(), this.getY(), this.getZ(), this.getYRot(), 0.0F);
+            skeleton.finalizeSpawn((ServerLevelAccessor) level(), level().getCurrentDifficultyAt(getOnPos()), MobSpawnType.MOB_SUMMONED, null);
+            skeleton.startRiding(this);
+        }
         super.die(pDamageSource);
     }
 

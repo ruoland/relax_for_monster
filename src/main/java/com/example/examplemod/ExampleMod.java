@@ -183,15 +183,10 @@ public class ExampleMod
         else
             player.sendSystemMessage(Component.literal("이미 도감에 등록된 아이템입니다."));
 
-        ChestMenu chestMenu =MenuScreens.create(MenuType.GENERIC_9x6, Minecraft.getInstance(), 1, Component.literal("kssus"));
 
 
     }
-    @SubscribeEvent
-    public void onPlayerSaveEvent(RegisterMenuScreensEvent event) {
 
-        event.register(MenuType.GENERIC_9x6, MenuScreens.getScreenFactory(MenuType.GENERIC_9x6));
-    }
     @SubscribeEvent
     public void onPlayerSaveEvent(PlayerEvent.SaveToFile event){
         if(event.getEntity() instanceof ServerPlayer player) {
