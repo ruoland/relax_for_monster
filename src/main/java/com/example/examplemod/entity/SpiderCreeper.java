@@ -86,7 +86,7 @@ public class SpiderCreeper extends Spider {
         creeper.addDeltaMovement(livingEntityBack);
         creeper.ignite();
         creeper.getPersistentData().putInt("CWThrow", getId());
-
+        turn(getXRot() * 180, getYRot());
         runAwayFromCreeper = 100;
         findCooltime = 100;
     }

@@ -19,16 +19,7 @@ public class MiniCreeperRender extends MobRenderer<MiniCreeper, CreeperModel<Min
 
     @Override
     public void render(MiniCreeper pEntity, float pEntityYaw, float pPartialTicks, PoseStack pPoseStack, MultiBufferSource pBuffer, int pPackedLight) {
-        if(!pEntity.isAdult()) {
-            pPoseStack.pushPose();
-            pPoseStack.scale(0.5F, 0.5F, 0.5F);
-            super.render(pEntity, pEntityYaw, pPartialTicks, pPoseStack, pBuffer, pPackedLight);
-            pPoseStack.popPose();
-        }
-        else
-            super.render(pEntity, pEntityYaw, pPartialTicks, pPoseStack, pBuffer, pPackedLight);
-
-
+        super.render(pEntity, pEntityYaw, pPartialTicks, pPoseStack, pBuffer, pPackedLight);
     }
 
     @Override

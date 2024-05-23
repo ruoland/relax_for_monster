@@ -7,14 +7,8 @@ import com.example.examplemod.dictionary.PlayerDictionaryManager;
 import com.example.examplemod.dictionary.FileManager;
 import com.example.examplemod.dictionary.ItemManager;
 import com.example.examplemod.dictionary.TagManager;
-import com.example.examplemod.entity.EnderCreeper;
-import com.example.examplemod.entity.MiniCreeper;
-import com.example.examplemod.entity.RelaxEntityEvent;
-import com.example.examplemod.entity.ZombieCreeper;
-import com.example.examplemod.entity.render.EnderCreeperRender;
-import com.example.examplemod.entity.render.MiniCreeperRender;
-import com.example.examplemod.entity.render.SpiderCreeperRender;
-import com.example.examplemod.entity.render.ZombieCreeperRender;
+import com.example.examplemod.entity.*;
+import com.example.examplemod.entity.render.*;
 import com.example.examplemod.gui.DictionaryContainer;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.logging.LogUtils;
@@ -127,6 +121,8 @@ public class ExampleMod
         event.put(MyEntity.MINI_CREEPER.get(), MiniCreeper.createAttributes().add(Attributes.MAX_HEALTH).build());
         event.put(MyEntity.ZOMBIE_CREEPER.get(), ZombieCreeper.createAttributes().add(Attributes.MAX_HEALTH)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 0F).build());
+        event.put(MyEntity.ROCKET_CREEPER.get(), RocketCreeper.createAttributes().add(Attributes.MAX_HEALTH)
+                .add(Attributes.KNOCKBACK_RESISTANCE, 0F).build());
 
     }
     private void commonSetup(final FMLCommonSetupEvent event)
@@ -237,6 +233,7 @@ public class ExampleMod
             EntityRenderers.register(MyEntity.SPIDER.get(), SpiderCreeperRender::new);
             EntityRenderers.register(MyEntity.MINI_CREEPER.get(), MiniCreeperRender::new);
             EntityRenderers.register(MyEntity.ZOMBIE_CREEPER.get(), ZombieCreeperRender::new);
+            EntityRenderers.register(MyEntity.ROCKET_CREEPER.get(), RocketCreeperRender::new);
             LOGGER.info("MINECRAFT NAME >> {}", Minecraft.getInstance().getUser().getName());
         }
 

@@ -35,6 +35,11 @@ public class ZombieCreeper extends Creeper {
     }
 
     @Override
+    public void die(DamageSource pDamageSource) {
+        super.die(pDamageSource);
+    }
+
+    @Override
     public void addAdditionalSaveData(CompoundTag pCompound) {
         super.addAdditionalSaveData(pCompound);
     }
