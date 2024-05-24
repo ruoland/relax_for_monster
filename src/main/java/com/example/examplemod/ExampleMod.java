@@ -7,28 +7,28 @@ import com.example.examplemod.dictionary.PlayerDictionaryManager;
 import com.example.examplemod.dictionary.FileManager;
 import com.example.examplemod.dictionary.ItemManager;
 import com.example.examplemod.dictionary.TagManager;
-import com.example.examplemod.entity.EnderCreeper;
-import com.example.examplemod.entity.MiniCreeper;
-import com.example.examplemod.entity.RelaxEntityEvent;
-import com.example.examplemod.entity.ZombieCreeper;
-import com.example.examplemod.entity.render.EnderCreeperRender;
-import com.example.examplemod.entity.render.MiniCreeperRender;
-import com.example.examplemod.entity.render.SpiderCreeperRender;
-import com.example.examplemod.entity.render.ZombieCreeperRender;
+import com.example.examplemod.entity.*;
+import com.example.examplemod.entity.render.*;
+import com.example.examplemod.gui.DictionaryContainer;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.SimpleMenuProvider;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.Spider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodProperties;
+import net.minecraft.world.inventory.ChestMenu;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -44,6 +44,7 @@ import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
@@ -80,7 +81,6 @@ public class ExampleMod
     // Create a Deferred Register to hold CreativeModeTabs which will all be registered under the "examplemod" namespace
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
     // Creates a creative tab with the id "examplemod:example_tab" for the example item, that is placed after the combat tab
-
 
     // The constructor for the mod class is the first code that is run when your mod is loaded.
     // FML will recognize some parameter types like IEventBus or ModContainer and pass them in automatically.
@@ -122,7 +122,10 @@ public class ExampleMod
         event.put(MyEntity.MINI_CREEPER.get(), MiniCreeper.createAttributes().add(Attributes.MAX_HEALTH).build());
         event.put(MyEntity.ZOMBIE_CREEPER.get(), ZombieCreeper.createAttributes().add(Attributes.MAX_HEALTH)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 0F).build());
-
+        event.put(MyEntity.ROCKET_CREEPER.get(), RocketCreeper.createAttributes().add(Attributes.MAX_HEALTH)
+                .add(Attributes.KNOCKBACK_RESISTANCE, 0F).build());
+        event.put(MyEntity.MOKOUR_BLOCK.get(), RocketCreeper.createAttributes().add(Attributes.MAX_HEALTH)
+                .add(Attributes.KNOCKBACK_RESISTANCE, 0F).build());
     }
     private void commonSetup(final FMLCommonSetupEvent event)
     {
@@ -177,6 +180,9 @@ public class ExampleMod
         }
         else
             player.sendSystemMessage(Component.literal("이미 도감에 등록된 아이템입니다."));
+
+
+
     }
 
     @SubscribeEvent
@@ -229,6 +235,8 @@ public class ExampleMod
             EntityRenderers.register(MyEntity.SPIDER.get(), SpiderCreeperRender::new);
             EntityRenderers.register(MyEntity.MINI_CREEPER.get(), MiniCreeperRender::new);
             EntityRenderers.register(MyEntity.ZOMBIE_CREEPER.get(), ZombieCreeperRender::new);
+            EntityRenderers.register(MyEntity.ROCKET_CREEPER.get(), RocketCreeperRender::new);
+            EntityRenderers.register(MyEntity.MOKOUR_BLOCK.get(), MokourBlockRender::new);
             LOGGER.info("MINECRAFT NAME >> {}", Minecraft.getInstance().getUser().getName());
         }
 

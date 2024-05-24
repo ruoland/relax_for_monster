@@ -44,5 +44,6 @@ public class DictionaryEvent {
                 mc.setScreen(dictionary);
             }
         }
+
     }
 }
