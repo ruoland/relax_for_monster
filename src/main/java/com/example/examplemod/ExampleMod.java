@@ -1,34 +1,22 @@
 package com.example.examplemod;
 
-import com.example.examplemod.dictionary.DictionaryCommand;
-import com.example.examplemod.dictionary.DictionaryEvent;
-import com.example.examplemod.dictionary.LangManager;
-import com.example.examplemod.dictionary.PlayerDictionaryManager;
-import com.example.examplemod.dictionary.FileManager;
-import com.example.examplemod.dictionary.ItemManager;
-import com.example.examplemod.dictionary.TagManager;
+import com.example.examplemod.dictionary.*;
 import com.example.examplemod.entity.*;
 import com.example.examplemod.entity.render.*;
-import com.example.examplemod.gui.DictionaryContainer;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.SimpleMenuProvider;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.Spider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodProperties;
-import net.minecraft.world.inventory.ChestMenu;
-import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -44,7 +32,6 @@ import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
-import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
@@ -211,8 +198,6 @@ public class ExampleMod
     @SubscribeEvent
     public void onPlayerLoadEvent(PlayerEvent.LoadFromFile event){
 
-        //ItemDataManager.loadMainCategory();
-        //ItemDataManager.loadBlacklist();
     }
 
     // You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent
@@ -235,7 +220,8 @@ public class ExampleMod
             EntityRenderers.register(MyEntity.SPIDER.get(), SpiderCreeperRender::new);
             EntityRenderers.register(MyEntity.MINI_CREEPER.get(), MiniCreeperRender::new);
             EntityRenderers.register(MyEntity.ZOMBIE_CREEPER.get(), ZombieCreeperRender::new);
-            EntityRenderers.register(MyEntity.ROCKET_CREEPER.get(), RocketCreeperRender::new);
+
+            EntityRenderers.register(MyEntity.ROCKET_CREEPER.get(), RocketCreeperRender2::new);
             EntityRenderers.register(MyEntity.MOKOUR_BLOCK.get(), MokourBlockRender::new);
             LOGGER.info("MINECRAFT NAME >> {}", Minecraft.getInstance().getUser().getName());
         }

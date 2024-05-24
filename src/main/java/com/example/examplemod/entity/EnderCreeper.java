@@ -46,8 +46,10 @@ public class EnderCreeper extends Creeper {
 
             if(teleportDealy-- <= 0) {
                 teleportDealy = 200;
-                if (getTarget() != null && !isIgnited())
+                if (getTarget() != null && !isIgnited()) {
                     teleportToTarget();
+                    setHealth(getMaxHealth() / 2);
+                }
             }
         }
         else

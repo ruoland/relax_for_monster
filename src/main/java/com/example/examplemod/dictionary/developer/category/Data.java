@@ -9,7 +9,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public interface Data {
 
@@ -17,16 +16,36 @@ public interface Data {
     ArrayList<File> DICTIONARY_FILE_LIST = new ArrayList<>();
     Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
+    static void save() throws IOException {
+
+    }
+
+    static <T> Object readJson(Path path, Class<T> tC){
+
+        try {
+            return GSON.fromJson(Files.readString(path), tC);
+        } catch (Exception e) {
+            System.out.println("이 파일을 읽던 중, 오류 발생했습니다.:" + path);
+            throw new RuntimeException(e);
+        }
+    }
+
+    static  <T> void saveJson(Path path, Object obj){
+        try {
+            Files.writeString(path, GSON.toJson(obj));
+        } catch (IOException e) {
+            System.out.println("이 파일을 읽던 중, 오류 발생했습니다.:" + path);
+            throw new RuntimeException(e);
+        }
+
+    }
+
     default void init() {
         try {
             Files.createDirectories(DIRECTORY_PATH);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    static void save() throws IOException {
-
     }
 
     default void createFolder(Path createFile) {
@@ -45,25 +64,6 @@ public interface Data {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-
-    static <T> Object readJson(Path path, Class<T> tC){
-
-        try {
-            return GSON.fromJson(Files.readString(path), tC);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    static  <T> void saveJson(Path path, Object obj){
-        try {
-            Files.writeString(path, GSON.toJson(obj));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
     }
 
 }

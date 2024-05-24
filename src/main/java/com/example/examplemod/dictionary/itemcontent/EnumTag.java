@@ -41,7 +41,7 @@ public enum EnumTag {
     REDSTONE("button", "plate", "redstone", "lever", "dispenser", "dropper", "observer", "hopper", "piston", "repeater", "daylight", "lilac","lily"),
     BOX("box"),
     SANDSTONE("sandstone", "sand"),
-    FLOWER("tulip", "daisy", "flower", "dandelion", "bush", "sunflower"),
+    FLOWER("tulip", "daisy", "flower", "dandelion", "bush", "sunflower", "Allium", "Poppy", "Orchid", "Azure", "cornflower", "lily", "lilac", "rose", "peony"),
     DIRT("dirt", "grass", "gravel", "podzol"),
     POLISHED("polished"),
     POTION("potion"),
@@ -50,8 +50,10 @@ public enum EnumTag {
     ORE_ITEMS("raw", "coal_block"),
     ETC;
 
-    private String[] strings;
+    private static final EnumMap<EnumTag, String> tagDictionary = new EnumMap<>(EnumTag.class);
+    private final String[] strings;
     private ItemTag itemTag;
+
     EnumTag(String... str){
         this.strings = str;
     }
@@ -70,7 +72,6 @@ public enum EnumTag {
         return itemTag;
     }
 
-    private static final EnumMap<EnumTag, String> tagDictionary = new EnumMap<>(EnumTag.class);
     public String getTagDictionary(){
         tagDictionary.put(ARMOR, "방어구입니다. 방어구는 가죽, 철, 금(내구성, 방어력 낮음), 다이아몬드, 네더라이트(최종 아이템) 아이템으" +
                 "로 모자, 갑옷, 바지, 신발을 제작할 수 있으며, 세상을 모험하다 보면 사슬 갑옷도 얻을 수 있습니다.\\n" +

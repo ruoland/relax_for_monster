@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.EnumMap;
 
 public class TagManager {
     private static final EnumMap<EnumTag, ItemTag> tagEnumMap = new EnumMap<>(EnumTag.class);
@@ -54,6 +54,7 @@ public class TagManager {
             ItemTag itemTag = getItemTag(getTag(itemStack));
             SubData sub = itemTag.getSubData();
             if(sub == null) {
+                itemTag.getSubData();
                 continue;
             }
             if(sub.hasGroup(itemStack))

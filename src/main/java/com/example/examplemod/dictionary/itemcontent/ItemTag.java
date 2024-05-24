@@ -11,11 +11,13 @@ public class ItemTag {
     //파일 이름
     transient String thisName;
 
-    transient EnumTag tag;
+    EnumTag tag;
     public ItemTag(EnumTag tag){
         this.thisName = tag.name();
         this.tag = tag;
+
         tagSubMap.put(tag, new SubData(tag));
+        System.out.println(tag+ "의 서브 데이터" + getSubData());
     }
 
     public String getTagName() {

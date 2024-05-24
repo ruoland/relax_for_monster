@@ -20,15 +20,15 @@ import java.util.Arrays;
 
 public class ContentScreen extends DebugScreen {
     private static final String NEW_LINE = "-NewNewNewLine-";
+    private final FormattedText itemName;
+    private final FormattedText itemEngName;
+    private final ArrayList<ItemStack> itemList = new ArrayList<>();
+    private final Screen lastScreen;
     int itemInfoName = 90;
     int itemInfoX = itemInfoName + 30;
     int itemRender = 75;
     int width = 300;
     int tick  = 0;
-    private final FormattedText itemName;
-    private final FormattedText itemEngName;
-    private final ArrayList<ItemStack> itemList = new ArrayList<>();
-    private final Screen lastScreen;
     private Component[] dictionarySplit = new Component[10];
     private int itemIndex;
 
@@ -37,7 +37,7 @@ public class ContentScreen extends DebugScreen {
         itemName = FormattedText.of(itemStack.getDisplayName().getString());
         itemEngName = FormattedText.of(LangManager.getEnglishName(itemStack));
         SubData subData = TagManager.getTagManager().getItemTag(itemStack).getSubData();
-
+        System.out.println(subData +" - "+itemStack + " - "+TagManager.getTagManager().getItemTag(itemStack).getTagName());
         for(ItemGroupContent groupContent : subData.getGroupMap().values()){
             for(ItemContent content :groupContent.getContentMap().values())
                 itemList.add(ItemManager.getItemStackMap().get(content.getItemID()));
