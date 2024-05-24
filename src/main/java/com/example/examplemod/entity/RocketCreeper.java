@@ -81,6 +81,8 @@ public class RocketCreeper extends Creeper {
                     entityData.set(DATA_FIXED_HEAD, yHeadRot);
                     entityData.set(DATA_FIXED_BODY, yBodyRot);
                     launchDirection = Direction.fromYRot(yHeadRot);
+                    livingEntityBack = getLookAngle().add(0, 0.5, 0).multiply(1.001, 0, 1.001);
+                    System.out.println(launchDirection+ " 방향");
                 }
             }
         }
@@ -112,11 +114,7 @@ public class RocketCreeper extends Creeper {
 
             if(livingEntityBack == null) {
                 getAttributes().getInstance(Attributes.MOVEMENT_SPEED).setBaseValue(0);
-                Vec3 lookTarget = pTarget.position().add(pTarget.getLookAngle().multiply(-1.5, 0, -1.5));
 
-
-                livingEntityBack = getLookAngle().add(0, 0.5, 0).multiply(1.001, 0, 1.001);
-                System.out.println("설정" + lookTarget +" - "+getDirection() +" - "+yHeadRot +" - "+yBodyRot);
             }
         }
         super.setTarget(pTarget);

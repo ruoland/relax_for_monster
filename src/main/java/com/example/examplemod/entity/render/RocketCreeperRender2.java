@@ -15,7 +15,7 @@ import net.minecraft.world.phys.Vec3;
 
 public class RocketCreeperRender2 extends MobRenderer<RocketCreeper, CreeperModel<RocketCreeper>> {
     private static final ResourceLocation CREEPER_LOCATION = new ResourceLocation("textures/entity/creeper/creeper.png");
-    private float a = 0;
+    private final float a = 0;
     public RocketCreeperRender2(EntityRendererProvider.Context pContext) {
         super(pContext, new CreeperModel<>(pContext.bakeLayer(ModelLayers.CREEPER)), 0.5F);
 
@@ -41,15 +41,18 @@ public class RocketCreeperRender2 extends MobRenderer<RocketCreeper, CreeperMode
 
         pPoseStack.pushPose();
         Vec3 vec3 = shootFromRotation(pEntity.getXRot(),  pEntity.getYRot(), 90.0F);
-        Direction direction = pEntity.launchDirection == null ? pEntity.getDirection() : pEntity.launchDirection;
-        if(a <= 90)
-            a+= 2;
+        Direction i = pEntity.launchDirection == null ? pEntity.getDirection() : pEntity.launchDirection;
 
-        float f1 = sleepDirectionToRotation(direction) ;
+
+
+        float f1 = sleepDirectionToRotation(i) ;
+
+        pPoseStack.translate(0,1,0);
         pPoseStack.mulPose(Axis.YP.rotationDegrees(f1));
-        pPoseStack.mulPose(Axis.ZP.rotationDegrees(a));
+
+
         pPoseStack.mulPose(Axis.YP.rotationDegrees(270.0F));
-        pPoseStack.mulPose(Axis.ZP.rotationDegrees(pEntity.yHeadRot));
+        pPoseStack.mulPose(Axis.ZP.rotationDegrees(pEntity.getFixHead()));
 
         super.render(pEntity, pEntityYaw, pPartialTicks, pPoseStack, pBuffer, pPackedLight);
 
