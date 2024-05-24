@@ -21,6 +21,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.SimpleMenuProvider;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.Spider;
 import net.minecraft.world.entity.player.Inventory;
@@ -123,7 +124,8 @@ public class ExampleMod
                 .add(Attributes.KNOCKBACK_RESISTANCE, 0F).build());
         event.put(MyEntity.ROCKET_CREEPER.get(), RocketCreeper.createAttributes().add(Attributes.MAX_HEALTH)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 0F).build());
-
+        event.put(MyEntity.MOKOUR_BLOCK.get(), RocketCreeper.createAttributes().add(Attributes.MAX_HEALTH)
+                .add(Attributes.KNOCKBACK_RESISTANCE, 0F).build());
     }
     private void commonSetup(final FMLCommonSetupEvent event)
     {
@@ -234,6 +236,7 @@ public class ExampleMod
             EntityRenderers.register(MyEntity.MINI_CREEPER.get(), MiniCreeperRender::new);
             EntityRenderers.register(MyEntity.ZOMBIE_CREEPER.get(), ZombieCreeperRender::new);
             EntityRenderers.register(MyEntity.ROCKET_CREEPER.get(), RocketCreeperRender::new);
+            EntityRenderers.register(MyEntity.MOKOUR_BLOCK.get(), MokourBlockRender::new);
             LOGGER.info("MINECRAFT NAME >> {}", Minecraft.getInstance().getUser().getName());
         }
 

@@ -32,20 +32,41 @@ public class RocketCreeperRender extends MobRenderer<RocketCreeper, CreeperModel
         super(pContext, new CreeperModel<>(pContext.bakeLayer(ModelLayers.CREEPER)), 0.5F);
 
     }
-
-    int roX = 1, roZ;
+    private int a = 0;
     @Override
     public void render(RocketCreeper pEntity, float pEntityYaw, float pPartialTicks, PoseStack pPoseStack, MultiBufferSource pBuffer, int pPackedLight) {
 
         pPoseStack.pushPose();
-        Vec3 vec3 =shootFromRotation(pEntity.getXRot(),  90, 0.0F);
-        getModel().root().xRot = (float) vec3.x;
-        getModel().root().yRot = (float) vec3.y;
+        Vec3 vec3 = shootFromRotation(pEntity.getXRot(),  pEntity.getYRot(), 90.0F);
+        Direction direction = pEntity.getDirection();
+        if(a <= 90)
+        a++;
 
+
+        float f1 = sleepDirectionToRotation(direction) ;
+        pPoseStack.mulPose(Axis.YP.rotationDegrees(f1));
+        pPoseStack.mulPose(Axis.ZP.rotationDegrees(a));
+        pPoseStack.mulPose(Axis.YP.rotationDegrees(270.0F));
+        pPoseStack.mulPose(Axis.ZP.rotationDegrees(pEntity.yHeadRot + 360));
 
         super.render(pEntity, pEntityYaw, pPartialTicks, pPoseStack, pBuffer, pPackedLight);
 
         pPoseStack.popPose();
+    }
+
+    private static float sleepDirectionToRotation(Direction pFacing) {
+        switch (pFacing) {
+            case SOUTH:
+                return 90.0F;
+            case WEST:
+                return 0.0F;
+            case NORTH:
+                return 270.0F;
+            case EAST:
+                return 180.0F;
+            default:
+                return 0.0F;
+        }
     }
 
     public Vec3 shootFromRotation(float pX, float pY, float pZ) {
