@@ -43,6 +43,7 @@ public class EnderCreeper extends Creeper {
             if(findSpider() && getVehicle() == null) {
                 return;
             }
+
             if(teleportDealy-- <= 0) {
                 teleportDealy = 200;
                 if (getTarget() != null && !isIgnited())

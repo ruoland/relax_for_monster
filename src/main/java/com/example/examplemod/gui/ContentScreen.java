@@ -3,7 +3,6 @@ package com.example.examplemod.gui;
 import com.example.examplemod.ExampleMod;
 import com.example.examplemod.dictionary.ItemManager;
 import com.example.examplemod.dictionary.LangManager;
-
 import com.example.examplemod.dictionary.TagManager;
 import com.example.examplemod.dictionary.itemcontent.ItemContent;
 import com.example.examplemod.dictionary.itemcontent.ItemGroupContent;
@@ -20,11 +19,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class ContentScreen extends DebugScreen {
-    private FormattedText itemName;
-    private FormattedText itemEngName;
-    private ArrayList<ItemStack> itemList = new ArrayList<>();
-    private Screen lastScreen;
     private static final String NEW_LINE = "-NewNewNewLine-";
+    int itemInfoName = 90;
+    int itemInfoX = itemInfoName + 30;
+    int itemRender = 75;
+    int width = 300;
+    int tick  = 0;
+    private final FormattedText itemName;
+    private final FormattedText itemEngName;
+    private final ArrayList<ItemStack> itemList = new ArrayList<>();
+    private final Screen lastScreen;
     private Component[] dictionarySplit = new Component[10];
     private int itemIndex;
 
@@ -58,10 +62,6 @@ public class ContentScreen extends DebugScreen {
             dictionarySplit[0] = Component.literal("이 도감 내용에는 줄바꿈이 너무 많아 제대로 표현할 수 없습니다. '\\n' 의 개수를 줄여주세요.");
         }
     }
-    int itemInfoName = 90;
-    int itemInfoX = itemInfoName + 30;
-    int itemRender = 75;
-    int width = 300;
 
     @Override
     public void render(GuiGraphics pGuiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
@@ -75,7 +75,7 @@ public class ContentScreen extends DebugScreen {
         pGuiGraphics.pose().pushPose();
         pGuiGraphics.pose().scale(1.3F,1.3F,1);
         drawText(3, pGuiGraphics, itemName, guiLeft+itemInfoName , guiTop+5, width, 0);
-        pGuiGraphics.pose().popPose();;
+        pGuiGraphics.pose().popPose();
 
         pGuiGraphics.pose().pushPose();
         pGuiGraphics.pose().scale(1.0F,1.0F,1);
@@ -107,7 +107,7 @@ public class ContentScreen extends DebugScreen {
 
         renderItem(pGuiGraphics, guiLeft + itemInfoName - itemRender, guiTop-2, 3.5F, itemList.get(itemIndex), pPartialTick);
     }
-    int tick  = 0;
+
     @Override
     public void tick() {
         super.tick();

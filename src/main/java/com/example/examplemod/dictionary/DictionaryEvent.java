@@ -4,6 +4,7 @@ import com.example.examplemod.ExampleMod;
 import com.example.examplemod.gui.ContentScreen;
 import net.minecraft.client.Minecraft;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.RenderTooltipEvent;
 import net.neoforged.neoforge.client.event.ScreenEvent;
 
@@ -24,6 +25,16 @@ public class DictionaryEvent {
 
     }
 
+    @SubscribeEvent
+    public void onKeyDown(ClientTickEvent.Pre event){
+
+        if(ExampleMod.ClientModEvents.OPEN_DICTIONARY.isDown()){
+                //DIctionaryScreen screen = new DIctionaryScreen(Component.literal("Dictionary"));
+                //Minecraft.getInstance().setScreen(screen);
+
+
+        }
+    }
     @SubscribeEvent
     public void onRenderTooltip(RenderTooltipEvent.Pre event){
         if(ExampleMod.ClientModEvents.OPEN_DICTIONARY.isDown()) {
