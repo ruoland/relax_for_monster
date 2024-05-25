@@ -46,6 +46,10 @@ public class EndermanTheKidnap extends EnderMan{
         }
     }
 
+    @Override
+    public boolean canRiderInteract() {
+        return true;
+    }
 
     @Nullable
     @Override

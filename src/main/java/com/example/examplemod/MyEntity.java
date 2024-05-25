@@ -46,6 +46,11 @@ public class MyEntity {
     public static final DeferredHolder<EntityType<?>, EntityType<MokourBlock>> MOKOUR_BLOCK =
             ENTITY_TYPES.register("mokour_block", () -> EntityType.Builder.of(MokourBlock::new, MobCategory.MISC)
                     .sized(1.0F, 1.0F).canSpawnFarFromPlayer().build("myrelax:mokourblock"));
+
+    public static final DeferredHolder<EntityType<?>, EntityType<Endercouple>> ENDER_COUPLE =
+            ENTITY_TYPES.register("endercouple", () -> EntityType.Builder.of(Endercouple::new, MobCategory.MONSTER)
+                    .sized(1.0F, 2.0F).canSpawnFarFromPlayer().build("myrelax:endercouple"));
+
     public static void register(IEventBus iEventBus){
         ENTITY_TYPES.register(iEventBus);
     }

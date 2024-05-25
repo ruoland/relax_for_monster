@@ -1,6 +1,5 @@
 package com.example.examplemod.entity;
 
-import com.example.examplemod.ExampleMod;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -32,7 +31,6 @@ public class MiniCreeper extends Creeper implements IEntityExtension {
         return Creeper.createLivingAttributes().add(Attributes.KNOCKBACK_RESISTANCE, 0D).
                 add(Attributes.MOVEMENT_SPEED, 0.25).
                 add(Attributes.FOLLOW_RANGE, 16);
-
     }
 
     @Override
@@ -57,8 +55,14 @@ public class MiniCreeper extends Creeper implements IEntityExtension {
     @Override
     public boolean hurt(DamageSource pSource, float pAmount) {
 
-        if(isAdult()) {
 
+        return super.hurt(pSource, pAmount);
+    }
+
+    @Override
+    public void die(DamageSource pDamageSource) {
+
+        if(isAdult()) {
             if(this.level() instanceof ServerLevelAccessor) {
                 ServerLevelAccessor level = (ServerLevelAccessor) getCommandSenderWorld();
                 MiniCreeper miniCreeper = new MiniCreeper(EntityType.CREEPER, level());
@@ -71,14 +75,14 @@ public class MiniCreeper extends Creeper implements IEntityExtension {
 
                 miniCreeperBrother.finalizeSpawn((ServerLevelAccessor) this.level(), level().getCurrentDifficultyAt(this.blockPosition()), MobSpawnType.JOCKEY, null);
                 miniCreeperBrother.explosionRadius = explosionRadius / 2;
-                ExampleMod.LOGGER.info("생성 시도222" + level().isClientSide);
-                    level().addFreshEntity(miniCreeper);
-                    level().addFreshEntity(miniCreeperBrother);
-                    ExampleMod.LOGGER.info("생성 시도");
+
+                level().addFreshEntity(miniCreeper);
+                level().addFreshEntity(miniCreeperBrother);
+
 
             }
         }
-        return super.hurt(pSource, pAmount);
+        super.die(pDamageSource);
     }
 
     @Nullable
