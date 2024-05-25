@@ -74,6 +74,6 @@ public class EndermanTheKidnap extends EnderMan{
 
     @Override
     public Vec3 getPassengerRidingPosition(Entity pEntity) {
-        return super.getPassengerRidingPosition(pEntity).subtract(0,1,0).add(getLookAngle().multiply(1.1, 1.05, 1.1));
+        return super.getPassengerRidingPosition(pEntity).subtract(0,1,0).add(getLookAngle().multiply(1.05, 1.05, 1.05));
     }
 }

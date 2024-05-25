@@ -9,16 +9,16 @@ public class ModelEndercouple extends EndermanModel {
     public ModelEndercouple(ModelPart pRoot) {
         super(pRoot);
     }
-
+    float a = -3F;
     @Override
     public void setupAnim(LivingEntity pEntity, float pLimbSwing, float pLimbSwingAmount, float pAgeInTicks, float pNetHeadYaw, float pHeadPitch) {
         Endercouple endercouple = (Endercouple) pEntity;
-
+        this.riding = false;
         super.setupAnim(pEntity, pLimbSwing, pLimbSwingAmount, pAgeInTicks, pNetHeadYaw, pHeadPitch);
-
+        this.riding = false;
         if(endercouple.isLeftHand())
-            leftArm.yRot= -10F;
+            leftArm.zRot= -0.15F;
         else
-            rightArm.yRot = 10F;
+            rightArm.zRot = 0.15F;
     }
 }

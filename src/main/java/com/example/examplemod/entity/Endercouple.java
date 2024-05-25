@@ -2,22 +2,26 @@ package com.example.examplemod.entity;
 
 import com.example.examplemod.MyEntity;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.entity.SpawnGroupData;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.monster.EnderMan;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.entity.IEntityWithComplexSpawn;
 import org.jetbrains.annotations.Nullable;
 
-public class Endercouple extends EnderMan {
-    public static final EntityDataAccessor<Boolean> DATA_LEFT_HAND = SynchedEntityData.defineId(Endercouple.class, EntityDataSerializers.BOOLEAN);
+public class Endercouple extends EnderMan implements IEntityWithComplexSpawn {
+    private boolean isLeftHand = true;
+
     public Endercouple(EntityType<? extends EnderMan> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
     }
@@ -25,48 +29,68 @@ public class Endercouple extends EnderMan {
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder pBuilder) {
         super.defineSynchedData(pBuilder);
-        pBuilder.define(DATA_LEFT_HAND, true);
+
     }
 
-    @Nullable
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor pLevel, DifficultyInstance pDifficulty, MobSpawnType pSpawnType, @Nullable SpawnGroupData pSpawnGroupData) {
-        if(this.level() instanceof ServerLevelAccessor) {
-
-            Endercouple endercouple = new Endercouple(MyEntity.ENDER_COUPLE.value(), level());
+    protected InteractionResult mobInteract(Player pPlayer, InteractionHand pHand) {
+        Endercouple endercouple = MyEntity.ENDER_COUPLE.get().create(level());
+        if (endercouple != null) {
             endercouple.moveTo(position());
-            level().addFreshEntity(endercouple);
             endercouple.setLeftHand(!isLeftHand());
+            level().addFreshEntity(endercouple);
             endercouple.startRiding(this);
         }
+        return super.mobInteract(pPlayer, pHand);
+    }
 
-        return super.finalizeSpawn(pLevel, pDifficulty, pSpawnType, pSpawnGroupData);
+    public boolean isLeftHand(){
+        return isLeftHand;
+    }
+
+    public void setLeftHand(boolean leftHand){
+        isLeftHand = leftHand;
     }
 
     @Override
-    public Vec3 getPassengerRidingPosition(Entity pEntity) {
+    public void tick() {
+        super.tick();
+        if(!getPassengers().isEmpty()) {
+            Endercouple endercouple = (Endercouple) getPassengers().get(0);
+            endercouple.setXRot(getXRot());
+            endercouple.setYRot(getYRot());
+            endercouple.setYBodyRot(yBodyRot);
 
-        return super.getPassengerRidingPosition(pEntity);
+        }
+
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag pCompound) {
-        super.readAdditionalSaveData(pCompound);
-        setLeftHand(pCompound.getBoolean("lefthand"));
+    protected Vec3 getPassengerAttachmentPoint(Entity pEntity, EntityDimensions pDimensions, float pPartialTick) {
+        Vec3 lookRightAngle = this.calculateViewVector(this.getXRot(), this.getYRot()+90).multiply(1.05F,1,1.05F).subtract(0,2,0);
+
+        return super.getPassengerAttachmentPoint(pEntity, pDimensions, pPartialTick).add(lookRightAngle);
     }
 
     @Override
     public void addAdditionalSaveData(CompoundTag pCompound) {
         super.addAdditionalSaveData(pCompound);
-        pCompound.putBoolean("lefthand", isLeftHand());
+        pCompound.putBoolean("isLeft", isLeftHand);
     }
 
-    public boolean isLeftHand(){
-        return entityData.get(DATA_LEFT_HAND);
+    @Override
+    public void readAdditionalSaveData(CompoundTag pCompound) {
+        super.readAdditionalSaveData(pCompound);
+        isLeftHand = pCompound.getBoolean("isLeft");
     }
 
-    public void setLeftHand(boolean leftHand){
-        entityData.set(DATA_LEFT_HAND, leftHand);
+    @Override
+    public void writeSpawnData(RegistryFriendlyByteBuf buffer) {
+        buffer.writeBoolean(isLeftHand);
     }
 
+    @Override
+    public void readSpawnData(RegistryFriendlyByteBuf additionalData) {
+        isLeftHand = additionalData.readBoolean();
+    }
 }
