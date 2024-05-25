@@ -34,6 +34,15 @@ public class MyEntity {
     public static final DeferredHolder<EntityType<?>, EntityType<RocketCreeper>> ROCKET_CREEPER =
             ENTITY_TYPES.register("rocket_creeper", () -> EntityType.Builder.of(RocketCreeper::new, MobCategory.MONSTER)
                     .sized(1.0F, 2.0F).canSpawnFarFromPlayer().build("myrelax:rocketcreeper"));
+
+    public static final DeferredHolder<EntityType<?>, EntityType<EndermanTheScary>> ENDERMOB =
+            ENTITY_TYPES.register("endermob", () -> EntityType.Builder.of(EndermanTheScary::new, MobCategory.MONSTER)
+                    .sized(1.0F, 2.0F).canSpawnFarFromPlayer().build("myrelax:endermob"));
+
+    public static final DeferredHolder<EntityType<?>, EntityType<EndermanTheKidnap>> ENDER_KIDNAP =
+            ENTITY_TYPES.register("enderkidnap", () -> EntityType.Builder.of(EndermanTheKidnap::new, MobCategory.MONSTER)
+                    .sized(1.0F, 2.0F).canSpawnFarFromPlayer().build("myrelax:enderkidnap"));
+
     public static final DeferredHolder<EntityType<?>, EntityType<MokourBlock>> MOKOUR_BLOCK =
             ENTITY_TYPES.register("mokour_block", () -> EntityType.Builder.of(MokourBlock::new, MobCategory.MISC)
                     .sized(1.0F, 1.0F).canSpawnFarFromPlayer().build("myrelax:mokourblock"));

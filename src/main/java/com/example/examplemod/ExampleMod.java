@@ -111,7 +111,9 @@ public class ExampleMod
                 .add(Attributes.KNOCKBACK_RESISTANCE, 0F).build());
         event.put(MyEntity.ROCKET_CREEPER.get(), RocketCreeper.createAttributes().add(Attributes.MAX_HEALTH)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 0F).build());
-        event.put(MyEntity.MOKOUR_BLOCK.get(), RocketCreeper.createAttributes().add(Attributes.MAX_HEALTH)
+        event.put(MyEntity.ENDERMOB.get(), EndermanTheScary.createAttributes().add(Attributes.MAX_HEALTH)
+                .add(Attributes.KNOCKBACK_RESISTANCE, 0F).build());
+        event.put(MyEntity.ENDER_KIDNAP.get(), EndermanTheKidnap.createAttributes().add(Attributes.MAX_HEALTH)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 0F).build());
     }
     private void commonSetup(final FMLCommonSetupEvent event)
@@ -222,6 +224,8 @@ public class ExampleMod
             EntityRenderers.register(MyEntity.ZOMBIE_CREEPER.get(), ZombieCreeperRender::new);
 
             EntityRenderers.register(MyEntity.ROCKET_CREEPER.get(), RocketCreeperRender2::new);
+            EntityRenderers.register(MyEntity.ENDERMOB.get(), EndermanTheScaryRender::new);
+            EntityRenderers.register(MyEntity.ENDER_KIDNAP.get(), EndermanTheKidnapRender::new);
             EntityRenderers.register(MyEntity.MOKOUR_BLOCK.get(), MokourBlockRender::new);
             LOGGER.info("MINECRAFT NAME >> {}", Minecraft.getInstance().getUser().getName());
         }

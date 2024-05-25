@@ -5,28 +5,30 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.Creeper;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3f;
 
 public class RocketCreeper extends Creeper {
     private static final EntityDataAccessor<Boolean> DATA_IS_FIRE = SynchedEntityData.defineId(RocketCreeper.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> DATA_IS_LAUNCH = SynchedEntityData.defineId(RocketCreeper.class, EntityDataSerializers.BOOLEAN);
-    private static final EntityDataAccessor<Float> DATA_FIXED_HEAD = SynchedEntityData.defineId(RocketCreeper.class, EntityDataSerializers.FLOAT);
-    private static final EntityDataAccessor<Float> DATA_FIXED_BODY = SynchedEntityData.defineId(RocketCreeper.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Float> DATA_FIXED_X_ROT = SynchedEntityData.defineId(RocketCreeper.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Float> DATA_FIXED_Y_ROT = SynchedEntityData.defineId(RocketCreeper.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Vector3f> DATA_TARGET_POS = SynchedEntityData.defineId(RocketCreeper.class, EntityDataSerializers.VECTOR3);
+    private static final EntityDataAccessor<Integer> DATA_ROTATE = SynchedEntityData.defineId(RocketCreeper.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Float> DATA_TRANSLATE = SynchedEntityData.defineId(RocketCreeper.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Integer> DATA_ROTATE_Y = SynchedEntityData.defineId(RocketCreeper.class, EntityDataSerializers.INT);
+
     private final int rotTime = 0;//
     public Direction launchDirection;
+
     Vec3 livingEntityBack;
-    private int rotateCooldown = 80;
 
     public RocketCreeper(EntityType<? extends Creeper> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
@@ -43,67 +45,95 @@ public class RocketCreeper extends Creeper {
         super.defineSynchedData(pBuilder);
         pBuilder.define(DATA_IS_FIRE,false);
         pBuilder.define(DATA_IS_LAUNCH, false);
-        pBuilder.define(DATA_FIXED_HEAD,-1F);
-        pBuilder.define(DATA_FIXED_BODY, -1F);
-    }
-
-    @Override
-    protected InteractionResult mobInteract(Player pPlayer, InteractionHand pHand) {
-        if(pPlayer.getItemInHand(pHand) .getItem() == Items.PUMPKIN){
-            this.setYHeadRot(pPlayer.yHeadRot);
-            this.setYBodyRot(pPlayer.yBodyRot);
-            setYHeadRot(pPlayer.yHeadRot);
-            setYBodyRot(pPlayer.yBodyRot);
-            entityData.set(DATA_FIXED_HEAD, pPlayer.yHeadRot);
-            entityData.set(DATA_FIXED_HEAD, pPlayer.yBodyRot);
-            launchDirection =Direction.fromYRot(yHeadRot);
-
-            System.out.println("설정 우클릭 "+pPlayer.getDirection() +" - "+Direction.fromYRot(yHeadRot) +" - "+yHeadRot +" - "+yBodyRot);
-        }
-
-        return super.mobInteract(pPlayer, pHand);
+        pBuilder.define(DATA_FIXED_X_ROT,-1F);
+        pBuilder.define(DATA_FIXED_Y_ROT, -1F);
+        pBuilder.define(DATA_TARGET_POS, new Vector3f(0,0,0));
+        pBuilder.define(DATA_ROTATE, 0);
+        pBuilder.define(DATA_TRANSLATE, 0F);
+        pBuilder.define(DATA_ROTATE_Y, 0);
     }
 
     @Override
     public void tick() {
         super.tick();
 
+        if(getFixXRot() != -1)
+        {
+            setXRot(getFixXRot());
+            setYRot(getFixYRot());
+        }
         if(getTarget() != null && !isLaunch()){
-            if(rotateCooldown >= 30)
-                lookControl.setLookAt(getTarget());
             if(!entityData.get(DATA_IS_LAUNCH)) {
-                rotateCooldown--;
-                if(rotateCooldown <= 0) {
+                setRotate(getRotate()+(90/30));
+                setTranslate(getTranslate()+((float) 1/50));
+                setRotateY(getRotateY()+(90/10));
+                lookControl.setLookAt(getTarget());
+
+                if(getRotate() >= 120) {
                     entityData.set(DATA_IS_LAUNCH, true);
-                    entityData.set(DATA_FIXED_HEAD, yHeadRot);
-                    entityData.set(DATA_FIXED_BODY, yBodyRot);
-                    launchDirection = Direction.fromYRot(yHeadRot);
-                    livingEntityBack = getLookAngle().add(0, 0.5, 0).multiply(1.001, 0, 1.001);
-                    System.out.println(launchDirection+ " 방향");
+                    setFixXRot(getXRot());
+                    setFixYRot(getFixYRot());
+                    entityData.set(DATA_TARGET_POS, getTarget().position().toVector3f());
                 }
             }
         }
-        if(livingEntityBack != null && entityData.get(DATA_IS_LAUNCH)){
-            setDeltaMovement(livingEntityBack);
-
+        if(entityData.get(DATA_IS_LAUNCH)){
+            Vector3f vector3f = entityData.get(DATA_TARGET_POS).sub(this.position().toVector3f());
+            if(livingEntityBack == null)
+                livingEntityBack = new Vec3(vector3f.x, vector3f.y, vector3f.z);
+            setDeltaMovement(livingEntityBack.normalize().multiply(0.5, 1, 0.5));
+            ignite();
         }
 
     }
 
-    public float getFixBody(){
-        return entityData.get(DATA_FIXED_BODY);
+    public float getTranslate(){
+        return entityData.get(DATA_TRANSLATE);
     }
 
-    public float getFixHead(){
-        return entityData.get(DATA_FIXED_HEAD);
+    public void setTranslate(float f){
+        entityData.set(DATA_TRANSLATE, f);
     }
 
+    public float getFixYRot(){
+        return entityData.get(DATA_FIXED_Y_ROT);
+
+    }
+
+    public void setFixYRot(float yRot){
+        entityData.set(DATA_FIXED_Y_ROT, yRot);
+        setXRot(getFixXRot());
+        setYRot(getFixYRot());
+    }
+
+    public int getRotateY(){
+        return entityData.get(DATA_ROTATE_Y);
+    }
+
+    public void setRotateY(int rotate){
+        entityData.set(DATA_ROTATE_Y, rotate );
+    }
+    public int getRotate(){
+        return entityData.get(DATA_ROTATE);
+    }
+
+    public void setRotate(int rotate){
+        entityData.set(DATA_ROTATE, rotate );
+    }
+
+    public float getFixXRot(){
+        return entityData.get(DATA_FIXED_X_ROT);
+    }
+
+    public void setFixXRot(float xRot){
+        entityData.set(DATA_FIXED_X_ROT, xRot);
+        setXRot(getFixXRot());
+        setYRot(getFixYRot());
+    }
 
     @Override
     public boolean canAttack(LivingEntity pTarget) {
-        if(position().distanceTo(pTarget.position()) > 8)
-            return true;
-        return false;
+        return position().distanceTo(pTarget.position()) > 6;
     }
 
     @Override
@@ -111,6 +141,7 @@ public class RocketCreeper extends Creeper {
         if(pTarget != getTarget()) {
             if(pTarget == null){
                 ignite();
+                System.out.println("타겟 찾을 수 없음!");
                 return;
             }
 
@@ -123,13 +154,25 @@ public class RocketCreeper extends Creeper {
     }
 
     @Override
+    public int getMaxHeadYRot() {
+        return 360;
+    }
+
+    @Override
+    public int getMaxHeadXRot() {
+        return 360;
+    }
+
+
+
+    @Override
     protected float getMaxHeadRotationRelativeToBody() {
-        return 100;
+        return 0;
     }
 
     @Override
     public int getHeadRotSpeed() {
-        return 100;
+        return 1000;
     }
 
     public boolean isLaunch(){
@@ -154,8 +197,14 @@ public class RocketCreeper extends Creeper {
         pCompound.putBoolean("IS_FIRE", isFire());
         pCompound.putBoolean("IS_LAUNCHED", isLaunch());
         pCompound.putShort("Fuse", (short)999);
-        pCompound.putFloat("Head", entityData.get(DATA_FIXED_HEAD));
-        pCompound.putFloat("Body", entityData.get(DATA_FIXED_BODY));
+        pCompound.putFloat("Head", entityData.get(DATA_FIXED_X_ROT));
+        pCompound.putFloat("Body", entityData.get(DATA_FIXED_Y_ROT));
+        pCompound.putFloat("targetX", entityData.get(DATA_TARGET_POS).x);
+        pCompound.putFloat("targetY", entityData.get(DATA_TARGET_POS).y);
+        pCompound.putFloat("targetZ", entityData.get(DATA_TARGET_POS).z);
+        pCompound.putFloat("Translate", entityData.get(DATA_TRANSLATE));
+        pCompound.putInt("Rotate", entityData.get(DATA_ROTATE));
+        pCompound.putInt("RotateY", entityData.get(DATA_ROTATE_Y));
     }
 
     @Override
@@ -163,8 +212,11 @@ public class RocketCreeper extends Creeper {
         super.readAdditionalSaveData(pCompound);
         entityData.set(DATA_IS_FIRE, pCompound.getBoolean("IS_FIRE"));
         entityData.set(DATA_IS_LAUNCH, pCompound.getBoolean("IS_LAUNCH"));
-        entityData.set(DATA_FIXED_HEAD, pCompound.getFloat("Head"));
-        entityData.set(DATA_FIXED_BODY, pCompound.getFloat("Body"));
-
+        entityData.set(DATA_FIXED_X_ROT, pCompound.getFloat("Head"));
+        entityData.set(DATA_FIXED_Y_ROT, pCompound.getFloat("Body"));
+        entityData.set(DATA_TARGET_POS, new Vector3f(pCompound.getFloat("targetX"), pCompound.getFloat("targetY"), pCompound.getFloat("targetZ")));
+        entityData.set(DATA_ROTATE, pCompound.getInt("Rotate"));
+        entityData.set(DATA_ROTATE_Y, pCompound.getInt("RotateY"));
+        entityData.set(DATA_TRANSLATE, pCompound.getFloat("Translate"));
     }
 }
