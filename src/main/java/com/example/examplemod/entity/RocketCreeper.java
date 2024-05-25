@@ -60,9 +60,6 @@ public class RocketCreeper extends Creeper {
 
             System.out.println("설정 우클릭 "+pPlayer.getDirection() +" - "+Direction.fromYRot(yHeadRot) +" - "+yHeadRot +" - "+yBodyRot);
         }
-        else{
-
-        }
 
         return super.mobInteract(pPlayer, pHand);
     }
@@ -102,7 +99,12 @@ public class RocketCreeper extends Creeper {
     }
 
 
-
+    @Override
+    public boolean canAttack(LivingEntity pTarget) {
+        if(position().distanceTo(pTarget.position()) > 8)
+            return true;
+        return false;
+    }
 
     @Override
     public void setTarget(@Nullable LivingEntity pTarget) {

@@ -36,24 +36,14 @@ public class RocketCreeperRender2 extends MobRenderer<RocketCreeper, CreeperMode
         }
     }
 
+    float b =0;
     @Override
     public void render(RocketCreeper pEntity, float pEntityYaw, float pPartialTicks, PoseStack pPoseStack, MultiBufferSource pBuffer, int pPackedLight) {
 
         pPoseStack.pushPose();
-        Vec3 vec3 = shootFromRotation(pEntity.getXRot(),  pEntity.getYRot(), 90.0F);
-        Direction i = pEntity.launchDirection == null ? pEntity.getDirection() : pEntity.launchDirection;
-
-
-
-        float f1 = sleepDirectionToRotation(i) ;
-
-        pPoseStack.translate(0,1,0);
-        pPoseStack.mulPose(Axis.YP.rotationDegrees(f1));
-
-
-        pPoseStack.mulPose(Axis.YP.rotationDegrees(270.0F));
-        pPoseStack.mulPose(Axis.ZP.rotationDegrees(pEntity.getFixHead()));
-
+        pPoseStack.translate(-2,1,0);
+        pPoseStack.mulPose(Axis.XP.rotationDegrees(90));
+        pPoseStack.mulPose(Axis.ZP.rotationDegrees(pEntity.yHeadRot));
         super.render(pEntity, pEntityYaw, pPartialTicks, pPoseStack, pBuffer, pPackedLight);
 
         pPoseStack.popPose();

@@ -16,7 +16,7 @@ public class RelaxEntityEvent {
     @SubscribeEvent
     public void throwCreeper(MobSpawnEvent.FinalizeSpawn event){
         if(event.getEntity() instanceof Slime)
-            event.getEntity().discard();
+            event.setCanceled(true);
     }
     @SubscribeEvent
     public void throwCreeper(LivingKnockBackEvent event){
