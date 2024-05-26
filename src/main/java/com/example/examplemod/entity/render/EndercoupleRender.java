@@ -1,5 +1,6 @@
 package com.example.examplemod.entity.render;
 
+import com.example.examplemod.entity.Endercouple;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -16,7 +17,15 @@ public class EndercoupleRender extends EndermanRenderer {
     @Override
     public void render(EnderMan pEntity, float pEntityYaw, float pPartialTicks, PoseStack pPoseStack, MultiBufferSource pBuffer, int pPackedLight) {
         getModel().carrying = true;
-        super.render(pEntity, pEntityYaw, pPartialTicks, pPoseStack, pBuffer, pPackedLight);
+        Endercouple leftHandEnder = (Endercouple) pEntity;
+        if(pEntity.getVehicle() instanceof Endercouple rightHandEnder) {
+            rightHandEnder.setLeftHand(false);
+            super.render(rightHandEnder, pEntityYaw, pPartialTicks, pPoseStack, pBuffer, pPackedLight);
+        }
+        else {
+            leftHandEnder.setLeftHand(true);
+            super.render(leftHandEnder, pEntityYaw, pPartialTicks, pPoseStack, pBuffer, pPackedLight);
+        }
         getModel().carrying = true;
     }
 }

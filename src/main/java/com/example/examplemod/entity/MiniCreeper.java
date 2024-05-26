@@ -3,28 +3,15 @@ package com.example.examplemod.entity;
 import com.example.examplemod.MyEntity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.Creeper;
-import net.minecraft.world.entity.monster.Skeleton;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.ServerLevelAccessor;
 import net.neoforged.neoforge.common.extensions.IEntityExtension;
 import net.neoforged.neoforge.entity.IEntityWithComplexSpawn;
-import net.neoforged.neoforge.network.payload.AdvancedAddEntityPayload;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.function.Consumer;
 
 public class MiniCreeper extends Creeper implements IEntityExtension, IEntityWithComplexSpawn {
     private boolean isAdult = true;
@@ -61,13 +48,6 @@ public class MiniCreeper extends Creeper implements IEntityExtension, IEntityWit
     }
 
     @Override
-    public boolean hurt(DamageSource pSource, float pAmount) {
-
-
-        return super.hurt(pSource, pAmount);
-    }
-
-    @Override
     public void die(DamageSource pDamageSource) {
         System.out.println("소환 어른인가"+isAdult());
         if(isAdult()) {
@@ -91,24 +71,17 @@ public class MiniCreeper extends Creeper implements IEntityExtension, IEntityWit
         super.die(pDamageSource);
     }
 
-    @Nullable
-    @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor pLevel, DifficultyInstance pDifficulty, MobSpawnType pSpawnType, @Nullable SpawnGroupData pSpawnGroupData) {
-
-        return super.finalizeSpawn(pLevel, pDifficulty, pSpawnType, pSpawnGroupData);
-    }
-
     @Override
     public void addAdditionalSaveData(CompoundTag pCompound) {
         super.addAdditionalSaveData(pCompound);
-
+        pCompound.putBoolean("isAdult", isAdult);
         pCompound.putFloat("explosionRadius", explosionRadius);
     }
 
     @Override
     public void readAdditionalSaveData(CompoundTag pCompound) {
         super.readAdditionalSaveData(pCompound);
-
+        isAdult = pCompound.getBoolean("isAdult");
         explosionRadius = pCompound.getFloat("explosionRadius");
     }
 
@@ -118,12 +91,12 @@ public class MiniCreeper extends Creeper implements IEntityExtension, IEntityWit
 
     }
 
-    public void setAdult(boolean adult){
-        isAdult = adult;
-    }
-
     public boolean isAdult(){
         return isAdult;
+    }
+
+    public void setAdult(boolean adult){
+        isAdult = adult;
     }
 
     @Override

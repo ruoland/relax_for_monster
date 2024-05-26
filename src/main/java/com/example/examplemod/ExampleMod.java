@@ -107,7 +107,7 @@ public class ExampleMod
         event.put(MyEntity.CREEPER.get(), EnderCreeper.createAttributes().add(Attributes.MAX_HEALTH).add(Attributes.KNOCKBACK_RESISTANCE, 0F).build());
         event.put(MyEntity.SPIDER.get(), Spider.createAttributes().add(Attributes.MAX_HEALTH).add(Attributes.KNOCKBACK_RESISTANCE, 0F).build());
         event.put(MyEntity.MINI_CREEPER.get(), MiniCreeper.createAttributes().add(Attributes.MAX_HEALTH).build());
-        event.put(MyEntity.ZOMBIE_CREEPER.get(), ZombieCreeper.createAttributes().add(Attributes.MAX_HEALTH)
+        event.put(MyEntity.ZOMBIE_CREEPER.get(), ZombieCreeper.createZombieAttribute().add(Attributes.MAX_HEALTH)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 0F).build());
         event.put(MyEntity.ROCKET_CREEPER.get(), RocketCreeper.createAttributes().add(Attributes.MAX_HEALTH)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 0F).build());
