@@ -1,6 +1,7 @@
 package com.example.examplemod.entity;
 
 import com.example.examplemod.MyEntity;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -9,7 +10,9 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.monster.EnderMan;
 import net.minecraft.world.entity.player.Player;
@@ -22,6 +25,7 @@ import org.jetbrains.annotations.Nullable;
 public class Endercouple extends EnderMan implements IEntityWithComplexSpawn {
     private boolean isLeftHand = true;
 
+
     public Endercouple(EntityType<? extends EnderMan> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
     }
@@ -29,7 +33,6 @@ public class Endercouple extends EnderMan implements IEntityWithComplexSpawn {
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder pBuilder) {
         super.defineSynchedData(pBuilder);
-
     }
 
     @Override
@@ -60,10 +63,13 @@ public class Endercouple extends EnderMan implements IEntityWithComplexSpawn {
             endercouple.setXRot(getXRot());
             endercouple.setYRot(getYRot());
             endercouple.setYBodyRot(yBodyRot);
-
+            double d0 = this.random.nextGaussian() * 0.02;
+            double d1 = this.random.nextGaussian() * 0.02;
+            double d2 = this.random.nextGaussian() * 0.02;
+            this.level().addParticle(ParticleTypes.HEART, this.getRandomX(1.0), this.getRandomY() + 0.5, this.getRandomZ(1.0), d0, d1, d2);
         }
-
     }
+
 
     @Override
     protected Vec3 getPassengerAttachmentPoint(Entity pEntity, EntityDimensions pDimensions, float pPartialTick) {

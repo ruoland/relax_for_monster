@@ -14,11 +14,17 @@ public class ModelEndercouple extends EndermanModel {
     public void setupAnim(LivingEntity pEntity, float pLimbSwing, float pLimbSwingAmount, float pAgeInTicks, float pNetHeadYaw, float pHeadPitch) {
         Endercouple endercouple = (Endercouple) pEntity;
         this.riding = false;
-        super.setupAnim(pEntity, pLimbSwing, pLimbSwingAmount, pAgeInTicks, pNetHeadYaw, pHeadPitch);
+
+
+        if(pEntity.getVehicle() instanceof LivingEntity vehicle)
+            super.setupAnim(vehicle, pLimbSwing, pLimbSwingAmount, pAgeInTicks, pNetHeadYaw, pHeadPitch);
+        else
+            super.setupAnim(pEntity, pLimbSwing, pLimbSwingAmount, pAgeInTicks, pNetHeadYaw, pHeadPitch);
+
         this.riding = false;
         if(endercouple.isLeftHand())
-            leftArm.zRot= -0.15F;
+            leftArm.zRot= -0.13F;
         else
-            rightArm.zRot = 0.15F;
+            rightArm.zRot = 0.13F;
     }
 }
