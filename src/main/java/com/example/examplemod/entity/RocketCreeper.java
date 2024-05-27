@@ -71,7 +71,7 @@ public class RocketCreeper extends Creeper {
 
                 if(getRotate() >= 120) {
                     entityData.set(DATA_IS_LAUNCH, true);
-                    setFixXRot(getXRot());
+                    setFixXRot(getFixXRot());
                     setFixYRot(getFixYRot());
                     entityData.set(DATA_TARGET_POS, getTarget().position().toVector3f());
                 }
