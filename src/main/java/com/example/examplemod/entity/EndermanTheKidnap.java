@@ -31,7 +31,7 @@ public class EndermanTheKidnap extends EnderMan{
             LivingEntity target = getTarget();
             if (teleportKidnap < 0 && kidnapCooltime < 0) {
                 if(getTarget().position().distanceTo(this.position()) > 4) {
-                    randomTeleport(target.getX() + Math.random(), target.getY() * Math.random(), target.getZ(),true);
+                    randomTeleport(target.getX() + Math.random(), target.getY() + Math.random(), target.getZ(),true);
                     teleportKidnap = 20;//텔레포트 후 납치할 때 잠깐의 딜레이
                 }
                 else if(getTarget().position().distanceTo(this.position()) < 4) {

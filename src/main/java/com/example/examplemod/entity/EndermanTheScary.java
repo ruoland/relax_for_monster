@@ -47,8 +47,6 @@ public class EndermanTheScary extends EnderMan {
 
         if(hasCarryMob()){
             LivingEntity mob = getCarriedMob();
-
-
             if(mob instanceof Creeper creeper){
                 if(getTarget() != null){
                     if(getTarget().position().distanceTo(this.position()) < 5){

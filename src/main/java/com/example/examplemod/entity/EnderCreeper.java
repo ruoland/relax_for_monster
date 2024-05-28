@@ -1,6 +1,5 @@
 package com.example.examplemod.entity;
 
-import com.example.examplemod.ExampleMod;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvents;
@@ -21,7 +20,8 @@ import java.util.List;
 
 public class EnderCreeper extends Creeper {
     private final boolean canTeleport = false;
-    private int teleportDealy = 100;
+    private int teleportDealy = 60;
+    private int ridingDelay = 100;
     public EnderCreeper(EntityType<? extends Creeper> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
     }
@@ -40,12 +40,12 @@ public class EnderCreeper extends Creeper {
     public void tick() {
         super.tick();
         if(getTarget() != null && distanceTo(getTarget()) > 5) {
-            if(findSpider() && getVehicle() == null) {
+            if(ridingDelay-- <= 0 && findSpider() && getVehicle() == null) {
+                ridingDelay = 100;
                 return;
             }
-
             if(teleportDealy-- <= 0) {
-                teleportDealy = 100;
+                teleportDealy = 60;
                 if (getTarget() != null && !isIgnited()) {
                     teleportToTarget();
                     setHealth(getMaxHealth() / 2);
@@ -53,7 +53,7 @@ public class EnderCreeper extends Creeper {
             }
         }
         else
-            teleportDealy = 200;
+            teleportDealy = 100;
     }
 
     public boolean findSpider(){
@@ -67,7 +67,7 @@ public class EnderCreeper extends Creeper {
                     if(teleportToSpider(spiderCreeper)){
                         spiderCreeper.lookAt(getTarget(), 360, 360);
                         spiderCreeper.startRiding(this, true);
-                        ExampleMod.LOGGER.info(getVehicle()+"");
+                        ridingDelay = 100;
                         return true;
                 }
             }

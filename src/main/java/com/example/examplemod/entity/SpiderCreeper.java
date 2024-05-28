@@ -47,7 +47,7 @@ public class SpiderCreeper extends Spider {
 
             if(getTarget() != null && creeper.getTarget() != null) {
                 lookAt(getTarget(), 360, 360);
-                if (distanceTo(getTarget()) <= 6) {
+                if (distanceTo(getTarget()) <= 8) {
                     stopRiding();
                     creeper.stopRiding();
                     creeper.getAttribute(Attributes.KNOCKBACK_RESISTANCE).setBaseValue(0);
@@ -68,11 +68,11 @@ public class SpiderCreeper extends Spider {
             if (entity instanceof Creeper creeper) {
                 if(!creeper.isIgnited()){
                     if (creeper instanceof EnderCreeper enderCreeper) {
-                        //enderCreeper.teleportToSpider(this);
+                        enderCreeper.teleportToSpider(this);
                         enderCreeper.startRiding(this);
                         break;
                     } else if (!(creeper.getRootVehicle() instanceof Spider)) {
-                        this.startRiding(creeper);
+                        creeper.startRiding(this);
                         break;
                     }
 

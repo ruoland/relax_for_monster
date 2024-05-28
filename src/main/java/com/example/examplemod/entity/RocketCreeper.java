@@ -78,6 +78,7 @@ public class RocketCreeper extends Creeper {
             }
         }
         if(entityData.get(DATA_IS_LAUNCH)){
+            stopRiding();
             Vector3f vector3f = entityData.get(DATA_TARGET_POS).sub(this.position().toVector3f());
             if(livingEntityBack == null)
                 livingEntityBack = new Vec3(vector3f.x, vector3f.y, vector3f.z);
