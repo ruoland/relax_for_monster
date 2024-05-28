@@ -40,6 +40,7 @@ public class EnderCreeper extends Creeper {
     public void tick() {
         super.tick();
         if(getTarget() != null && distanceTo(getTarget()) > 5) {
+            //주변에 거미가 있다면 찾는다
             if(ridingDelay-- <= 0 && findSpider() && getVehicle() == null) {
                 ridingDelay = 100;
                 return;
@@ -48,7 +49,7 @@ public class EnderCreeper extends Creeper {
                 teleportDealy = 60;
                 if (getTarget() != null && !isIgnited()) {
                     teleportToTarget();
-                    setHealth(getMaxHealth() / 2);
+                    setHealth(getHealth() / 2);
                 }
             }
         }
@@ -60,7 +61,6 @@ public class EnderCreeper extends Creeper {
         List<Entity> spiderCreeperList = level().getEntities(this, getBoundingBox().inflate(3, 2, 3));
         for (Entity entity : spiderCreeperList) {
             if (entity instanceof SpiderCreeper spiderCreeper) {
-                    //그 거미가 이미 크리퍼를 데리고 있거나 뭔가를 들고 있는 경우
                     if(spiderCreeper.hasCreeper()) {
                         continue;
                     }
@@ -72,6 +72,7 @@ public class EnderCreeper extends Creeper {
                 }
             }
         }
+        ridingDelay = 100;
         return false;
     }
     protected boolean teleportToTarget(){

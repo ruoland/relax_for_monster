@@ -32,7 +32,6 @@ import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
-import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
@@ -89,7 +88,7 @@ public class ExampleMod
         // Note that this is necessary if and only if we want *this* class (ExampleMod) to respond directly to events.
         // Do not add this line if there are no @SubscribeEvent-annotated functions in this class, like onServerStarting() below.
         //NeoForge.EVENT_BUS.register(this);
-        NeoForge.EVENT_BUS.register(new RelaxEntityEvent());
+
 
         MyEntity.register(modEventBus);
         modEventBus.addListener(this::newEntityAttributes);
@@ -116,6 +115,12 @@ public class ExampleMod
         event.put(MyEntity.ENDER_COUPLE.get(), Endercouple.createAttributes().add(Attributes.MAX_HEALTH)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 0F).build());
         event.put(MyEntity.ENDER_KIDNAP.get(), EndermanTheKidnap.createAttributes().add(Attributes.MAX_HEALTH)
+                .add(Attributes.KNOCKBACK_RESISTANCE, 0F).build());
+        event.put(MyEntity.MISSILE_CREEPER.get(), MissileCreeper.createAttributes().add(Attributes.MAX_HEALTH)
+                .add(Attributes.KNOCKBACK_RESISTANCE, 0F).build());
+        event.put(MyEntity.ZOMBIE_HUG.get(), ZombieHug.createAttributes().add(Attributes.MAX_HEALTH)
+                .add(Attributes.KNOCKBACK_RESISTANCE, 0F).build());
+        event.put(MyEntity.ENDER_THE_MUSICIAN.get(), EnderTheMusician.createAttributes().add(Attributes.MAX_HEALTH)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 0F).build());
     }
     private void commonSetup(final FMLCommonSetupEvent event)
@@ -230,7 +235,9 @@ public class ExampleMod
             EntityRenderers.register(MyEntity.ENDER_KIDNAP.get(), EndermanTheKidnapRender::new);
             EntityRenderers.register(MyEntity.ENDER_COUPLE.get(), EndercoupleRender::new);
             EntityRenderers.register(MyEntity.MOKOUR_BLOCK.get(), MokourBlockRender::new);
-
+            EntityRenderers.register(MyEntity.MISSILE_CREEPER.get(), MissleCreeperRender::new);
+            EntityRenderers.register(MyEntity.ZOMBIE_HUG.get(), ZombieHugRender::new);
+            EntityRenderers.register(MyEntity.ENDER_THE_MUSICIAN.get(), EnderMusicianRender::new);
             LOGGER.info("MINECRAFT NAME >> {}", Minecraft.getInstance().getUser().getName());
         }
 

@@ -18,6 +18,7 @@ public class EndermanTheScaryRender extends EndermanRenderer {
 
         super.render(pEntity, pEntityYaw, pPartialTicks, pPoseStack, pBuffer, pPackedLight);
         getModel().carrying = true;
-
+        
     }
+
 }

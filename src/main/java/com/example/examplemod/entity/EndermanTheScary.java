@@ -77,15 +77,17 @@ public class EndermanTheScary extends EnderMan {
             findCooltime = 100;
             List<Entity> mobList = level().getEntities(this, this.getBoundingBox().inflate(6,6,6));
             for(Entity entity :mobList){
-                if(entity instanceof Creeper || entity instanceof Skeleton){
-                    teleportTo(entity.getX(), entity.getY(), entity.getZ());
-                    entity.startRiding(this);
-                    ((Monster) entity).setHealth(((Monster) entity).getHealth()/2);
-                    return;
-                }
-                if(entity instanceof Chicken){
-                    teleportTo(entity.getX(), entity.getY(), entity.getZ());
-                    entity.startRiding(this);
+                if(entity.getVehicle() == null){
+                    if(entity instanceof Creeper || entity instanceof Skeleton){
+                        teleportTo(entity.getX(), entity.getY(), entity.getZ());
+                        entity.startRiding(this);
+                        ((Monster) entity).setHealth(((Monster) entity).getHealth()/2);
+                        return;
+                    }
+                    if(entity instanceof Chicken){
+                        teleportTo(entity.getX(), entity.getY(), entity.getZ());
+                        entity.startRiding(this);
+                    }
                 }
             }
         }

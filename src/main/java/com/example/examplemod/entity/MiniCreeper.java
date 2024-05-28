@@ -49,9 +49,9 @@ public class MiniCreeper extends Creeper implements IEntityExtension, IEntityWit
 
     @Override
     public void die(DamageSource pDamageSource) {
-        System.out.println("소환 어른인가"+isAdult());
+
         if(isAdult()) {
-            System.out.println("소환 어른임");
+
             MiniCreeper miniCreeper = MyEntity.MINI_CREEPER.get().create(level());
             miniCreeper.moveTo(getX(), getY(), getZ());
             miniCreeper.explosionRadius = explosionRadius / 2;
