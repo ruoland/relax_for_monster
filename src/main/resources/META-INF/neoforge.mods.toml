@@ -5,21 +5,21 @@ logoBlur=false
 
 
 [[mods]] #mandatory
-modId="myrelax" #mandatory
+modId="mymonsters" #mandatory
 version="1.0" #mandatory
-displayName="Item Dictionary" #mandatory
+displayName="My Monster" #mandatory
 authors="land" #optional
 description="Item Dictionary"
 displayURL=""
 
-[[dependencies.myrelax]] #optional
+[[dependencies.mymonsters]] #optional
 modId="neoforge" #mandatory
 type="required" #mandatory
 versionRange="[20.5,)" #mandatory
 ordering="NONE"
 side="BOTH"
 
-[[dependencies.myrelax]]
+[[dependencies.mymonsters]]
 modId="minecraft"
 type="required"
 versionRange="[1.20.6,1.21)"
