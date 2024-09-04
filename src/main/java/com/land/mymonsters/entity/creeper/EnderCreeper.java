@@ -29,7 +29,7 @@ public class EnderCreeper extends Creeper {
 
     public static AttributeSupplier.Builder createAttributes() {
 
-        return Creeper.createLivingAttributes().add(Attributes.KNOCKBACK_RESISTANCE, 0D).add(Attributes.MOVEMENT_SPEED, 0.25).add(Attributes.FOLLOW_RANGE, 16);
+        return Creeper.createLivingAttributes().add(Attributes.KNOCKBACK_RESISTANCE, 0D).add(Attributes.MOVEMENT_SPEED, 0.25).add(Attributes.FOLLOW_RANGE, 32);
     }
 
     @Override
@@ -41,11 +41,7 @@ public class EnderCreeper extends Creeper {
     public void tick() {
         super.tick();
         if(getTarget() != null && distanceTo(getTarget()) > 5) {
-            //주변에 거미가 있다면 찾는다
-            if(ridingDelay-- <= 0 && findSpider() && getVehicle() == null) {
-                ridingDelay = 100;
-                return;
-            }
+         
             if(teleportDealy-- <= 0) {
                 teleportDealy = 60;
                 if (getTarget() != null && !isIgnited()) {
@@ -57,31 +53,46 @@ public class EnderCreeper extends Creeper {
         else
             teleportDealy = 100;
     }
+    public Vec3 findSafeTeleportLocation(LivingEntity targetEntity, int maxAttempts) {
+        Vec3 sourcePos = this.position();
+        Vec3 targetPos = targetEntity.position();
+        Vec3 teleportVec = targetPos.subtract(sourcePos);
+        double distance = teleportVec.length();
 
-    public boolean findSpider(){
-        List<Entity> spiderCreeperList = level().getEntities(this, getBoundingBox().inflate(3, 2, 3));
-        for (Entity entity : spiderCreeperList) {
-            if (entity instanceof SpiderCreeper spiderCreeper) {
-                    if(spiderCreeper.hasCreeper()) {
-                        continue;
-                    }
-                    if(teleportToSpider(spiderCreeper)){
-                        spiderCreeper.lookAt(getTarget(), 360, 360);
-                        spiderCreeper.startRiding(this, true);
-                        ridingDelay = 100;
-                        return true;
-                }
+        // 거리에 따라 텔레포트 범위 조절 (예: 거리의 20%를 범위로 사용)
+        double range = distance * 0.2;
+
+        for (int i = 0; i < maxAttempts; i++) {
+            double randomX = sourcePos.x + (random.nextDouble() * 2 - 1) * range;
+            double randomY = sourcePos.y + (random.nextDouble() * 2 - 1) * range;
+            double randomZ = sourcePos.z + (random.nextDouble() * 2 - 1) * range;
+
+            BlockPos blockPos = new BlockPos((int)randomX, (int)randomY, (int)randomZ);
+
+            // 블록이 엔티티의 움직임을 막고, 그 위의 블록은 움직임을 막지 않는지 확인
+            if (level().getBlockState(blockPos).blocksMotion() &&
+                    !level().getBlockState(blockPos.above()).blocksMotion()) {
+                // 적합한 위치를 찾았으므로 해당 위치의 상단 중앙을 반환
+                return new Vec3(blockPos.getX() + 0.5, blockPos.getY() + 1, blockPos.getZ() + 0.5);
             }
         }
-        ridingDelay = 100;
-        return false;
+
+        // 적합한 위치를 찾지 못한 경우 원래 위치 반환
+        return sourcePos;
     }
     protected boolean teleportToTarget(){
         LivingEntity livingEntity = getTarget();
-        Vec3 livingEntityBack = livingEntity.getLookAngle().multiply(-5, 0, -5);
-        Vec3 v = livingEntity.position().add(livingEntityBack);
+        Vec3 targetPos;
+        if(!getTarget().canBeSeenAsEnemy() && random.nextInt(10) == 0) { //, 플레이어가 적을 볼 수 없는 상태라면 낮은 확률로 플레이어 뒤로 이동
+            Vec3 livingEntityBack = livingEntity.getLookAngle().multiply(-4, 0, -4);
+            targetPos = livingEntity.position().add(livingEntityBack);
+        }
+        else {
+            targetPos = livingEntity.position();
+            Vec3 teleportPos = findSafeTeleportLocation(getTarget(), 10);
 
-        return teleport(v.x, v.y, v.z);
+        }
+        return teleport(targetPos.x, targetPos.y, targetPos.z);
     }
     public boolean teleportToSpider(SpiderCreeper spiderCreeper){
         return teleport(spiderCreeper.getX(), spiderCreeper.getY()+1, spiderCreeper.getZ());
@@ -92,16 +103,6 @@ public class EnderCreeper extends Creeper {
         super.ignite();
     }
 
-    protected boolean teleport() {
-        if (!this.level().isClientSide() && this.isAlive()) {
-            double d0 = this.getX() + (this.random.nextDouble() - 0.5) * 64.0;
-            double d1 = this.getY() + (double)(this.random.nextInt(64) - 32);
-            double d2 = this.getZ() + (this.random.nextDouble() - 0.5) * 64.0;
-            return this.teleport(d0, d1, d2);
-        } else {
-            return false;
-        }
-    }
     private boolean teleport(double pX, double pY, double pZ) {
         BlockPos.MutableBlockPos blockpos$mutableblockpos = new BlockPos.MutableBlockPos(pX, pY, pZ);
 
@@ -110,11 +111,11 @@ public class EnderCreeper extends Creeper {
         }
 
         BlockState blockstate = this.level().getBlockState(blockpos$mutableblockpos);
-        boolean flag = blockstate.blocksMotion();//대나무, 거미줄 같은 블록은 회피
-        if (flag) {
-            Vec3 vec3 = this.position();
+        boolean canTeleport = blockstate.blocksMotion();//대나무, 거미줄 같은 블록은 회피
+        if (canTeleport) {
+            Vec3 pos = this.position();
             this.teleportTo(pX, pY, pZ); //해당 자리로 이동해도 되는지(블럭이 있는지 없는지)
-            this.level().gameEvent(GameEvent.TELEPORT, vec3, GameEvent.Context.of(this));
+            this.level().gameEvent(GameEvent.TELEPORT, pos, GameEvent.Context.of(this));
             if (!this.isSilent()) {
                 this.level().playSound(null, this.xo, this.yo, this.zo, SoundEvents.ENDERMAN_TELEPORT, this.getSoundSource(), 1.0F, 1.0F);
                 this.playSound(SoundEvents.ENDERMAN_TELEPORT, 1.0F, 1.0F);

@@ -68,18 +68,21 @@ public class RocketCreeper extends Creeper {
 
                 if(getRotate() >= 120) {
                     entityData.set(DATA_IS_LAUNCH, true);
-                    setFixXRot(getFixXRot());
-                    setFixYRot(getFixYRot());
                     entityData.set(DATA_TARGET_POS, getTarget().position().toVector3f());
                 }
             }
         }
         if(entityData.get(DATA_IS_LAUNCH)){
             stopRiding();
-            Vector3f vector3f = entityData.get(DATA_TARGET_POS).sub(this.position().toVector3f());
-            if(livingEntityBack == null)
+            if(livingEntityBack == null) {
+                Vector3f vector3f = entityData.get(DATA_TARGET_POS).sub(this.position().toVector3f());
                 livingEntityBack = new Vec3(vector3f.x, vector3f.y, vector3f.z);
+
+            }
             setDeltaMovement(livingEntityBack.normalize().multiply(0.5, 1, 0.5));
+            setYBodyRot(getFixXRot());
+            setYHeadRot(getFixYRot());
+            System.out.println(getFixXRot() + " : "+ getFixYRot() + " : "+!level().isClientSide());
             ignite();
         }
 
@@ -125,8 +128,8 @@ public class RocketCreeper extends Creeper {
 
     public void setFixXRot(float xRot){
         entityData.set(DATA_FIXED_X_ROT, xRot);
-        setXRot(getFixXRot());
-        setYRot(getFixYRot());
+        setXRot(yHeadRot);
+        setYRot(yBodyRot);
     }
 
     @Override
@@ -139,7 +142,7 @@ public class RocketCreeper extends Creeper {
         if(pTarget != getTarget()) {
             if(pTarget == null){
                 ignite();
-                System.out.println("타겟 찾을 수 없음!");
+
                 return;
             }
 

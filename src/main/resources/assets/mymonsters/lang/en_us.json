@@ -1,12 +1,12 @@
 {
 
-  "entity.mymonsters.ender_creeper": "엔더 크리퍼",
-  "entity.mymonsters.spider_creeper": "크미",
-  "entity.mymonsters.mini_creeper": "아기 크리퍼",
-  "entity.mymonsters.zombie_creeper": "좀비 크리퍼",
-  "entity.mymonsters.rocket_creeper": "로켓 크리퍼",
-   "entity.mymonsters.endermob": "힘 센 엔더맨",
-   "entity.mymonsters.enderkidnap": "납치범 엔더맨",
-   "entity.mymonsters.missile_creeper": "미사일 엔더맨",
-   "entity.mymonsters.endermusician": "연주가 엔더맨"
+  "entity.mymonsters.ender_creeper": "Ender Creeper",
+  "entity.mymonsters.spider_creeper": "Creeder",
+  "entity.mymonsters.mini_creeper": "Baby Creeper",
+  "entity.mymonsters.zombie_creeper": "Zombie Creeper",
+  "entity.mymonsters.rocket_creeper": "Rocket Creeper",
+   "entity.mymonsters.endermob": "Powerful Enderman",
+   "entity.mymonsters.enderkidnap": "Slenderman",
+   "entity.mymonsters.missile_creeper": "Missile Creeper",
+   "entity.mymonsters.endermusician": "Musician Enderman"
 }

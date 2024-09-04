@@ -1,6 +1,6 @@
 modLoader="javafml" #mandatory
 loaderVersion="[2,)" #mandatory
-license="GNU LESSER GENERAL PUBLIC LICENSE"
+license="CC BY-NC"
 logoBlur=false
 
 
@@ -9,7 +9,7 @@ modId="mymonsters" #mandatory
 version="1.0" #mandatory
 displayName="My Monster" #mandatory
 authors="land" #optional
-description="Item Dictionary"
+description="Super Ultra Monster"
 displayURL=""
 
 [[dependencies.mymonsters]] #optional

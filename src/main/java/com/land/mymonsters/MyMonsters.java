@@ -8,41 +8,25 @@ import com.mojang.logging.LogUtils;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.EntityRenderers;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.monster.Creeper;
-import net.minecraft.world.entity.monster.EnderMan;
-import net.minecraft.world.entity.monster.Spider;
-import net.minecraft.world.food.FoodProperties;
-import net.minecraft.world.item.*;
+import net.minecraft.world.entity.monster.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
-import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
-import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
-import net.neoforged.neoforge.event.entity.living.MobSpawnEvent;
-import net.neoforged.neoforge.event.entity.player.PlayerEvent;
-import net.neoforged.neoforge.registries.DeferredBlock;
-import net.neoforged.neoforge.registries.DeferredItem;
-import net.neoforged.neoforge.registries.DeferredRegister;
+import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import org.slf4j.Logger;
 
 // The value here should match an entry in the META-INF/neoforge.mods.toml file
@@ -85,95 +69,62 @@ public class MyMonsters
         event.put(MyEntity.MISSILE_CREEPER.get(), MissileCreeper.createAttributes().add(Attributes.MAX_HEALTH)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 0F).build());
 
-
+        event.put(MyEntity.SKELETON_CREEPER.get(), Monster.createMonsterAttributes().add(Attributes.MOVEMENT_SPEED, 0.25).build());
     }
-    public void spawnEntityEvent(MobSpawnEvent.AllowDespawn event) {
+
+    @SubscribeEvent
+    public void spawnEntityEvent(EntityJoinLevelEvent event) {
         if (!(event.getLevel() instanceof ServerLevelAccessor)) return;
-        ServerLevel level = event.getLevel().getLevel();
 
-        if (event.getEntity() instanceof Creeper) {
+        Level level = event.getLevel();
+        EntityType[] creepers = { MyEntity.ENDER_CREEPER.get(), MyEntity.MINI_CREEPER.get(), MyEntity.MISSILE_CREEPER.get()
+        , MyEntity.ROCKET_CREEPER.get(), MyEntity.ZOMBIE_CREEPER.get()};
+        EntityType[] endermans = { MyEntity.ENDERMOB.get(), MyEntity.ENDER_COUPLE.get(), MyEntity.ENDER_KIDNAP.get()};
+        EntityType[] spiders = { MyEntity.SPIDER_CREEPER.get()};
+        EntityType[] skeletons = { MyEntity.SKELETON_CREEPER.get()};
 
-            RandomSource rand = event.getEntity().getRandom();
-            int select = rand.nextInt(6);
+        Vec3 pos = event.getEntity().position();
+        RandomSource rand = RandomSource.create();
 
-            switch (select) {
-                case 0:
-                    EnderCreeper enderCreeper = MyEntity.ENDER_CREEPER.get().create(level.getLevel());
-                    enderCreeper.moveTo(event.getX(), event.getY(), event.getZ());
-                    level.addFreshEntity(enderCreeper);
-                    break;
-                case 1:
-                    MiniCreeper miniCreeper = MyEntity.MINI_CREEPER.get().create(level);
-                    miniCreeper.setPos(event.getX(), event.getY(), event.getZ());
-                    miniCreeper.setAdult(true);
-                    level.addFreshEntity(miniCreeper);
-
-                    break;
-                case 2:
-                    ZombieCreeper zombieCreeper = MyEntity.ZOMBIE_CREEPER.get().create(level);
-                    zombieCreeper.setPos(event.getX(), event.getY(), event.getZ());
-                    level.addFreshEntity(zombieCreeper);
-                    break;
-                case 3:
-                    RocketCreeper rocketCreeper = MyEntity.ROCKET_CREEPER.get().create(level);
-                    rocketCreeper.setPos(event.getX(), event.getY(), event.getZ());
-                    level.addFreshEntity(rocketCreeper);
-                    break;
-                case 4:
-                    MissileCreeper missileCreeper = MyEntity.MISSILE_CREEPER.get().create(level);
-                    missileCreeper.setPos(event.getX(), event.getY(), event.getZ());
-                    level.addFreshEntity(missileCreeper);
-                    break;
-
-                case 5:
-                    event.setSpawnCancelled(false);
+        if (event.getEntity().getClass() == Creeper.class) {
+            int select = rand.nextInt(creepers.length + 1);
+            if(select < creepers.length)
+                spawnEntity((Mob) creepers[select].create(level), pos);
+            else
+                event.setCanceled(false);
             }
 
-
-        }
-        if(event.getEntity().getClass() == EnderMan.class){
-            event.setSpawnCancelled(true);
-            RandomSource rand = event.getEntity().getRandom();
-            int select = rand.nextInt(4);
-            switch (select) {
-                case 0:
-                    Endercouple enderCouple = MyEntity.ENDER_COUPLE.get().create(level);
-                    enderCouple.setPos(event.getX(), event.getY(), event.getZ());
-                    event.getLevel().addFreshEntity(enderCouple);
-                    break;
-                case 1:
-                    EndermanTheKidnap endermanTheKidnap = MyEntity.ENDER_KIDNAP.get().create(level);
-                    endermanTheKidnap.setPos(event.getX(), event.getY(), event.getZ());
-                    event.getLevel().addFreshEntity(endermanTheKidnap);
-                    break;
-                case 2:
-                    EndermanTheScary endermanTheScary = MyEntity.ENDERMOB.get().create(level);
-                    endermanTheScary.setPos(event.getX(), event.getY(), event.getZ());
-                    event.getLevel().addFreshEntity(endermanTheScary);
-                    break;
-                case 3:
-                    event.setSpawnCancelled(false);
+            if (event.getEntity().getClass() == EnderMan.class) {
+                event.setCanceled(true);
+                int select = rand.nextInt(endermans.length +1);
+                if(select < endermans.length)
+                    spawnEntity((Mob) endermans[select].create(level), pos);
+                else
+                    event.setCanceled(false);
             }
 
+            if (event.getEntity().getClass() == Spider.class) {
+                event.setCanceled(true);
+                int select = rand.nextInt(spiders.length + 1);
+                if(select < spiders.length)
+                    spawnEntity((Mob) spiders[select].create(level), pos);
+                else
+                    event.setCanceled(false);
             }
-
-        if(event.getEntity().getClass() == Spider.class) {
-            event.setSpawnCancelled(true);
-            RandomSource rand = event.getEntity().getRandom();
-            int select = rand.nextInt(2);
-            switch (select) {
-                case 0:
-                    SpiderCreeper spiderCreeper = MyEntity.SPIDER_CREEPER.get().create(level);
-                    spiderCreeper.setPos(event.getX(), event.getY(), event.getZ());
-                    level.addFreshEntity(spiderCreeper);
-                    break;
-                case 1:
-                    event.setSpawnCancelled(false);
+            if(event.getEntity().getClass() == Skeleton.class){
+                event.setCanceled(true);
+                int select = rand.nextInt(skeletons.length + 1);
+                if( select < skeletons.length)
+                    spawnEntity((Mob) skeletons[select].create(level), pos);
+                else
+                    event.setCanceled(false);
             }
-        }
     }
-    
 
+    private void spawnEntity(Mob mob, Vec3 pos){
+        mob.moveTo(pos);
+        mob.level().addFreshEntity(mob);
+    }
     // You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent
     @EventBusSubscriber(modid = MODID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
     public static class ClientModEvents
@@ -195,12 +146,13 @@ public class MyMonsters
             EntityRenderers.register(MyEntity.MINI_CREEPER.get(), MiniCreeperRender::new);
             EntityRenderers.register(MyEntity.ZOMBIE_CREEPER.get(), ZombieCreeperRender::new);
 
-            EntityRenderers.register(MyEntity.ROCKET_CREEPER.get(), RocketCreeperRender2::new);
+            EntityRenderers.register(MyEntity.ROCKET_CREEPER.get(), RocketCreeperRender::new);
             EntityRenderers.register(MyEntity.ENDERMOB.get(), EndermanTheScaryRender::new);
             EntityRenderers.register(MyEntity.ENDER_KIDNAP.get(), EndermanTheKidnapRender::new);
             EntityRenderers.register(MyEntity.ENDER_COUPLE.get(), EndercoupleRender::new);
             EntityRenderers.register(MyEntity.MOKOUR_BLOCK.get(), MokourBlockRender::new);
             EntityRenderers.register(MyEntity.MISSILE_CREEPER.get(), MissleCreeperRender::new);
+            EntityRenderers.register(MyEntity.SKELETON_CREEPER.get(), SkeletonCreeperRender::new);
             LOGGER.info("MINECRAFT NAME >> {}", Minecraft.getInstance().getUser().getName());
         }
 

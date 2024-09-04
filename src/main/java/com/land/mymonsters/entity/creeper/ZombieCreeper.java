@@ -42,7 +42,7 @@ public class ZombieCreeper extends Creeper {
 
     @Override
     public boolean hurt(DamageSource pSource, float pAmount) {
-        System.out.println(getHealth() + " - "+ (getMaxHealth() / 1.4F));
+
         if (getHealth() < (getMaxHealth() / 1.4F) && !ressurection) {
             fakeDeathStart = true;
         }

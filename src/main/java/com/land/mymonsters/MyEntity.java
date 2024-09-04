@@ -27,8 +27,11 @@ public class MyEntity {
 
     public static final DeferredHolder<EntityType<?>, EntityType<SpiderCreeper>> SPIDER_CREEPER =
             ENTITY_TYPES.register("spider_creeper", () -> EntityType.Builder.of(SpiderCreeper::new, MobCategory.MONSTER)
-                    .sized(1.0F, 2.0F).canSpawnFarFromPlayer().build("myrelax:spidercreeper"));
+                    .sized(1.4F, 0.9F).eyeHeight(0.65F).canSpawnFarFromPlayer().build("myrelax:spidercreeper"));
 
+    public static final DeferredHolder<EntityType<?>, EntityType<SkeletonCreeper>> SKELETON_CREEPER =
+            ENTITY_TYPES.register("skeleton_creeper", () -> EntityType.Builder.of(SkeletonCreeper::new, MobCategory.MONSTER)
+                    .sized(1.0F, 2.0F).canSpawnFarFromPlayer().build("myrelax:skeletoncreeper"));
 
     public static final DeferredHolder<EntityType<?>, EntityType<MiniCreeper>> MINI_CREEPER =
             ENTITY_TYPES.register("mini_creeper", () -> EntityType.Builder.of(MiniCreeper::new, MobCategory.MONSTER)
