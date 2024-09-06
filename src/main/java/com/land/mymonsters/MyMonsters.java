@@ -68,6 +68,8 @@ public class MyMonsters
                 .add(Attributes.KNOCKBACK_RESISTANCE, 0F).build());
         event.put(MyEntity.MISSILE_CREEPER.get(), MissileCreeper.createAttributes().add(Attributes.MAX_HEALTH)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 0F).build());
+        event.put(MyEntity.MOKOUR_BLOCK.get(), MissileCreeper.createAttributes().add(Attributes.MAX_HEALTH)
+                .add(Attributes.KNOCKBACK_RESISTANCE, 0F).build());
 
         event.put(MyEntity.SKELETON_CREEPER.get(), Monster.createMonsterAttributes().add(Attributes.MOVEMENT_SPEED, 0.25).build());
     }
