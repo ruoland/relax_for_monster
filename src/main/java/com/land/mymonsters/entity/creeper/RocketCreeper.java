@@ -82,7 +82,6 @@ public class RocketCreeper extends Creeper {
             setDeltaMovement(livingEntityBack.normalize().multiply(0.5, 1, 0.5));
             setYBodyRot(getFixXRot());
             setYHeadRot(getFixYRot());
-            System.out.println(getFixXRot() + " : "+ getFixYRot() + " : "+!level().isClientSide());
             ignite();
         }
 

@@ -52,7 +52,7 @@ public class MyMonsters
     }
 
     public void newEntityAttributes(EntityAttributeCreationEvent event) {
-        MyMonsters.LOGGER.info("안녕");
+
         event.put(MyEntity.ENDER_CREEPER.get(), EnderCreeper.createAttributes().add(Attributes.MAX_HEALTH).add(Attributes.KNOCKBACK_RESISTANCE, 0F).build());
         event.put(MyEntity.SPIDER_CREEPER.get(), Spider.createAttributes().add(Attributes.MAX_HEALTH).add(Attributes.KNOCKBACK_RESISTANCE, 0F).build());
         event.put(MyEntity.MINI_CREEPER.get(), MiniCreeper.createAttributes().add(Attributes.MAX_HEALTH).build());
@@ -76,7 +76,8 @@ public class MyMonsters
 
     @SubscribeEvent
     public void spawnEntityEvent(EntityJoinLevelEvent event) {
-        if (!(event.getLevel() instanceof ServerLevelAccessor)) return;
+        if (!(event.getLevel() instanceof ServerLevelAccessor) || event.getLevel().isClientSide()) return;
+        if(event.getEntity().getPersistentData().getBoolean("MODDED_SPAWN")) return;
 
         Level level = event.getLevel();
         EntityType[] creepers = { MyEntity.ENDER_CREEPER.get(), MyEntity.MINI_CREEPER.get(), MyEntity.MISSILE_CREEPER.get()
@@ -90,17 +91,23 @@ public class MyMonsters
 
         if (event.getEntity().getClass() == Creeper.class) {
             int select = rand.nextInt(creepers.length + 1);
-            if(select < creepers.length)
+            if(select < creepers.length) {
                 spawnEntity((Mob) creepers[select].create(level), pos);
+                event.setCanceled(true);
+            }
             else
+                
                 event.setCanceled(false);
             }
 
             if (event.getEntity().getClass() == EnderMan.class) {
                 event.setCanceled(true);
                 int select = rand.nextInt(endermans.length +1);
-                if(select < endermans.length)
+                if(select < endermans.length) {
                     spawnEntity((Mob) endermans[select].create(level), pos);
+                    event.setCanceled(true);
+                }
+
                 else
                     event.setCanceled(false);
             }
@@ -108,16 +115,20 @@ public class MyMonsters
             if (event.getEntity().getClass() == Spider.class) {
                 event.setCanceled(true);
                 int select = rand.nextInt(spiders.length + 1);
-                if(select < spiders.length)
+                if(select < spiders.length) {
                     spawnEntity((Mob) spiders[select].create(level), pos);
+                    event.setCanceled(true);
+                }
                 else
                     event.setCanceled(false);
             }
             if(event.getEntity().getClass() == Skeleton.class){
                 event.setCanceled(true);
                 int select = rand.nextInt(skeletons.length + 1);
-                if( select < skeletons.length)
+                if( select < skeletons.length) {
                     spawnEntity((Mob) skeletons[select].create(level), pos);
+                    event.setCanceled(true);
+                }
                 else
                     event.setCanceled(false);
             }
@@ -126,6 +137,7 @@ public class MyMonsters
     private void spawnEntity(Mob mob, Vec3 pos){
         mob.moveTo(pos);
         mob.level().addFreshEntity(mob);
+        mob.getPersistentData().putBoolean("MODDED_SPAWN", true);
     }
     // You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent
     @EventBusSubscriber(modid = MODID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)

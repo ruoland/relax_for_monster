@@ -35,7 +35,7 @@ public class MyEntity {
 
     public static final DeferredHolder<EntityType<?>, EntityType<MiniCreeper>> MINI_CREEPER =
             ENTITY_TYPES.register("mini_creeper", () -> EntityType.Builder.of(MiniCreeper::new, MobCategory.MONSTER)
-                    .sized(1.0F, 2.0F).canSpawnFarFromPlayer().build("myrelax:minicreeper"));
+                    .sized(0.8F, 0.8F).canSpawnFarFromPlayer().build("myrelax:minicreeper"));
 
 
     public static final DeferredHolder<EntityType<?>, EntityType<ZombieCreeper>> ZOMBIE_CREEPER =
