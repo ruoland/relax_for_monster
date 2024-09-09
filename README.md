@@ -1,27 +1,13 @@
+마인크래프트의 몬스터들에게 다양하고 사기적인 능력들을 추가해주는 모드입니다.
 
-Installation information
-=======
+https://cafe.naver.com/minecraftgame/1913655
 
-This template repository can be directly cloned to get you started with a new
-mod. Simply create a new repository cloned from this one, by following the
-instructions at [github](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template).
+위 링크에 설명이 들어 있습니다.
 
-Once you have your clone, simply open the repository in the IDE of your choice. The usual recommendation for an IDE is either IntelliJ IDEA or Eclipse.
 
-> **Note**: For Eclipse, use tasks in `Launch Group` instead of ones founds in `Java Application`. A preparation task must run before launching the game. NeoGradle uses launch groups to do these subsequently.
+모드 구조
+ - 몬스터 스폰 구조는 몬스터가 소환되면 제가 새로 만든 몬스터로 대체하는 방식입니다.
+ - 예를 들어 EntityJoinWorldEvent에서 Creeper가 감지 됐다! 하면 일정 확률로 Creeper 대신 RockerCreeper나 MisslieCreeper, 아니면 그냥 Creeper가 소환되게끔 하고 있습니다.
 
-If at any point you are missing libraries in your IDE, or you've run into problems you can
-run `gradlew --refresh-dependencies` to refresh the local cache. `gradlew clean` to reset everything 
-{this does not affect your code} and then start the process again.
-
-Mapping Names:
-============
-By default, the MDK is configured to use the official mapping names from Mojang for methods and fields 
-in the Minecraft codebase. These names are covered by a specific license. All modders should be aware of this
-license. For the latest license text, refer to the mapping file itself, or the reference copy here:
-https://github.com/NeoForged/NeoForm/blob/main/Mojang.md
-
-Additional Resources: 
-==========
-Community Documentation: https://docs.neoforged.net/  
-NeoForged Discord: https://discord.neoforged.net/
+ - 커플 엔더맨은 한명 죽이면 같이 죽습니다
+ - EnderTheMusician은 플레이어 몰래 음산한 음악을 재생하게 하는 놈인데 개발 중입니다.
