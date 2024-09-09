@@ -7,7 +7,7 @@ logoBlur=false
 [[mods]] #mandatory
 modId="mymonsters" #mandatory
 version="1.0" #mandatory
-displayName="My Monster" #mandatory
+displayName="For The Monsters" #mandatory
 authors="land" #optional
 description="Super Ultra Monster"
 displayURL=""

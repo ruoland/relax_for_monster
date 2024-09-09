@@ -2,14 +2,17 @@ package com.land.mymonsters.entity;
 
 import com.land.mymonsters.entity.ai.AvoidCreeperGoal;
 import com.land.mymonsters.entity.creeper.EnderCreeper;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.Creeper;
+import net.minecraft.world.entity.monster.Skeleton;
 import net.minecraft.world.entity.monster.Spider;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -73,6 +76,23 @@ public class SpiderCreeper extends Spider {
         return getFirstPassenger() != null && (getFirstPassenger() instanceof Creeper);
     }
 
+    @Nullable
+    @Override
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor pLevel, DifficultyInstance pDifficulty, MobSpawnType pSpawnType, @Nullable SpawnGroupData pSpawnGroupData) {
+        RandomSource randomsource = pLevel.getRandom();
+        if (randomsource.nextInt(10) == 0) {
+            Creeper creeper = EntityType.CREEPER.create(this.level());
+            if (creeper != null) {
+                creeper.moveTo(this.getX(), this.getY(), this.getZ(), this.getYRot(), 0.0F);
+                creeper.finalizeSpawn(pLevel, pDifficulty, pSpawnType, null);
+                creeper.startRiding(this);
+            }
+
+        }
+        return super.finalizeSpawn(pLevel, pDifficulty, pSpawnType, pSpawnGroupData);
+
+    }
+
     //주변에서 크리퍼를 찾기
     public void findCreeper(){
         List<Entity> findCreeperList = level().getEntities(this, getBoundingBox().inflate(3, 2, 3));
@@ -105,11 +125,10 @@ public class SpiderCreeper extends Spider {
         runAwayFromCreeper = 100;
         findCooltime = 100;
     }
-    //엔더맨이 보고 있는 방향으로 엔티티를 배치
     @Override
     public Vec3 getPassengerRidingPosition(Entity pEntity) {
 
-        return super.getPassengerRidingPosition(pEntity).subtract(0,pEntity.getEyeHeight() - 0.2,0);
+        return super.getPassengerRidingPosition(pEntity).add(0,getEyeHeight() * 2 - pEntity.getEyeHeight(),0);
     }
 
     @Override

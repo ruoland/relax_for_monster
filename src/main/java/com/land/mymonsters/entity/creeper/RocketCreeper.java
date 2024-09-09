@@ -5,11 +5,13 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.Creeper;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
@@ -133,7 +135,8 @@ public class RocketCreeper extends Creeper {
 
     @Override
     public boolean canAttack(LivingEntity pTarget) {
-        return position().distanceTo(pTarget.position()) > 6;
+        boolean b = !(pTarget instanceof Player && ((Player) pTarget).isCreative()) && position().distanceTo(pTarget.position()) > 6;
+        return b;
     }
 
     @Override
